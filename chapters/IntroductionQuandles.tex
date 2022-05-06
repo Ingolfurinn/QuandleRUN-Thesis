@@ -1,0 +1,56 @@
+\documentclass{mcom-l}
+
+\begin{document}
+
+
+
+
+\begin{definition}
+\cite{bourbaki2013theory} %Pages 64,65
+Let $I,Y$ be sets. Let $f : I \to Y$ be a function.\newline
+For $i \in I$, the unique value of $i$ under $f$ can be denoted by $f(i)$(or $f_i$).\newline The functional graph $G_f = \{\langle i, Y\rangle \in I \times Y \mid y = f(i) = f_i\} \subset I \times Y$ is called a \emph{family}.\newline The set $\mathsf{ran}(f)=\{ f_i \mid i \in I\}$ can be called \emph{indexed set}, and, $I$ is called \emph{index set}.
+
+\end{definition}
+
+\begin{definition}
+Let $S \neq \emptyset$ and $n \in \mathbb{N}$.\newline
+For $n=0$, $S^n = \{ \emptyset \}$, and, for $n>0$, $S^n = \underbrace{S \times S \times \dots \times S}^{~n~\text{times}}$.\newline
+A \emph{unary} operation on S is a function $f : S \to S$.\newline
+A \emph{binary} operation on S is a function $f : S^2 \to S$.
+\end{definition}
+
+
+\begin{definition}
+\cite{burris1981course}
+A \emph{type} of algebras is a set $\mathfrak{F}$ of function symbols.\newline
+Each $f \in \mathfrak{F}$ is assigned a $n \in \mathbb{N}$, indicating its arity.\newline
+$\mathfrak{F}_n$ denotes the subset of $n$-ary function symbols.
+\end{definition}
+
+\begin{definition}
+\cite{burris1981course} %conflict between burris and denecke
+An algebra $\mathbf{A}=\langle S,  F\rangle$  of type $\mathfrak{F}$ is a $2$-tuple with $S\neq \emptyset$ and $F$ being a family of operations on $S$ with index set $\mathfrak{F}$.
+$F$ assigns a $n$-ary operation $f^{\mathbf{A}}$ on S, called \emph{fundamental operation}, to each function symbol in $\mathfrak{F}$.
+Often, when $\mathfrak{F}$ is finite, $\mathfrak{F} =\{f_1, f_2, \dots, f_n\}$, one can represent $\langle S, F\rangle$ with $\langle S, f_1, f_2, \dots, f_n\rangle$.
+\end{definition}
+ This work will only discuss algebras of finite types.
+\begin{example}
+An algebra $\mathbf{A}=\langle S, \cdot \rangle$ is a \emph{grupoid} if it has just one binary operation.\newline\newline
+An algebra $\mathbf{A} = \langle S, \cdot \rangle$ is a \emph{left quasigroup} if all \[L_x : S \to S \hspace{1em} y \mapsto x \cdot y, \hspace{1em} \text{for}~x\in S\hspace{2em}\text{(left translation)}\] are bijective. \cite{BonStanCommTheory2021}
+\end{example}
+
+\begin{definition}
+Let $\mathbf{R} = \langle S, \cdot \rangle$ be a left quasigroup. 
+If 
+\[\forall a,b,c \in S \quad a \cdot (b \cdot c) = (a \cdot b) \cdot (a \cdot c) \hspace{2em}\text{(left self-distributivity),}\]
+then $\mathbf{R}$ is called a \emph{rack}.\newline\newline
+Let $\mathbf{R} = \langle S, \cdot \rangle$ be a rack.
+If 
+\[\forall a \in S \quad a \cdot a = a \hspace{2em}\text{(left idempotency),}\]
+then $\mathbf{R}$ is called a \emph{quandle}.
+\end{definition}
+
+
+
+\end{document}
+

@@ -1,0 +1,28 @@
+\documentclass{mcom-l}
+
+\begin{document}
+
+
+
+\begin{definition}\cite{burris1981course} 
+Let \textbf{A} and \textbf{B} be two algebras of type $\mathfrak{F}$. Let $\mathcal{H} : \mathbf{A} \to \mathbf{B}$.\newline
+If for each $n$-ary fundamental operation $f^\mathbf{A},f^\mathbf{B}$ mapped to by symbol function $f \in \mathfrak{F}$,
+\[\forall \alpha_1,\alpha_2,\dots,\alpha_n \in \mathbf{A} \quad \mathcal{H}(f^{\mathbf{A}}(\alpha_1,\alpha_2,\dots,\alpha_n)) = f^{\mathbf{B}}(\mathcal{H}(\alpha_1),\mathcal{H}(\alpha_2),\dots, \mathcal{H}(\alpha_n))\]
+then $\mathcal{H}$ is a \emph{homomorphism}.
+\end{definition}
+
+\begin{definition}\label{homomorphismDefinition}\cite{burris1981course} 
+Let \textbf{A} and \textbf{B} be two algebras of type $\mathfrak{F}$. Let $\mathcal{H} : \mathbf{A} \to \mathbf{B}$ be a homomorphism. If
+\[\forall \alpha_1, \alpha_2 \in \mathbf{A} \quad \mathcal{H}(\alpha_1) = \mathcal{H}(\alpha_1) \implies \alpha_1 = \alpha_2,\]
+that is, $\mathcal{H}$ is injective, $\mathcal{H}$ is called a \emph{monomorphism}, or an \emph{embedding} of \textbf{A} into \textbf{B}. $\mathcal{H}(\mathbf{A})$ denotes a \emph{subalgebra} of \textbf{B}.
+\end{definition}
+
+\noindent Definition \ref{homomorphismDefinition} delineates a clear decision procedure to the problem \textit{Is a defined algebra \textbf{A} a subalgebra of a defined algebra \textbf{B}?} It is sufficient to prove the existence of a monomorphism $\mathcal{M}: \mathbf{A}\to \mathbf{B}$.\newline
+The way this is approached in \Software is by actually finding a monomorphism.
+
+
+\end{document}
+
+%------------------------------------------------------------------------------
+% End of mcom_sample.tex
+%------------------------------------------------------------------------------

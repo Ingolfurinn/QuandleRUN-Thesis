@@ -744,8 +744,8 @@ end intrinsic;
 /*
  * NOTE THE NAME OF THIS FUNCTION MIGHT *NOT* BE APPROPRIATE. CONSIDER IT A PLACEHOLDER.
  * Niccolò Carrivale + CREAM 
- * Input: Let A = <X = {1, 2, ..., n}, F> be a quandle, for some n in N.
- * Let B = <Y = {1, 2, ..., m}, M> be a quandle, for some m in N.
+ * Input: Let A = <X, F> be a quandle, with cardinality n.
+ * Let B = <Y, M> be a quandle, with cardinality m.
  * Let n >= m.
  *
  *  F : The binary operation on X represented by sequences of sequences.

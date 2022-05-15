@@ -81,7 +81,7 @@ end intrinsic;
 intrinsic AutQuandle(M :: SeqEnum[SeqEnum[RngIntElt]]) -> GrpPerm
 { Finds the automorphism group of M }
 
-	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
+	// Creates the symmetric group for the underlying set of M.
 	S_X := Sym({@ x : x in Sort(M[1])@});
 
 	permutations := Normaliser(S_X,Inn(M));
@@ -102,9 +102,7 @@ end intrinsic;
 intrinsic Inn(M :: SeqEnum[SeqEnum[RngIntElt]]) -> GrpPerm
 { Finds the inner automorphism group of M }
 	
-	
-
-	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
+	// Creates the symmetric group for the underlying set of M.
 	S_X := Sym({@ x : x in Sort(M[1])@});
 	
 	// Generates the Permutation Group with the permutations found above as generators.

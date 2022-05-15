@@ -50,7 +50,7 @@ intrinsic ConjugationQuandle(G :: Grp, n :: RngIntElt) -> ConjQndl
     
 		
 	// If, for any reason, the provided set and this operation do not form a quandle, the function will not return anything.
-	require isQuandle(QuandleMatrix(T)): "The provided set does not generate a quandle with this associated operation.";
+	require isQuandle(QuandleMatrix(T), [1..#T`Set]): "The provided set does not generate a quandle with this associated operation.";
         
     return T;
 end intrinsic;
@@ -90,7 +90,7 @@ intrinsic CoreQuandle(G :: Grp) -> CoreQndl
     
 		
 	// If, for any reason, the provided set and this operation do not form a quandle, the function will not return anything.
-	require isQuandle(QuandleMatrix(T)): "The provided set does not generate a quandle with this associated operation.";
+	require isQuandle(QuandleMatrix(T),[1..#T`Set]): "The provided set does not generate a quandle with this associated operation.";
         
     return T;
 end intrinsic;
@@ -143,7 +143,7 @@ intrinsic HomogeneousQuandle(G :: Grp, f :: GrpAutoElt) -> HomQndl
     
 		
 	// If, for any reason, the provided set and this operation do not form a quandle, the function will not return anything.
-	require isQuandle(QuandleMatrix(T)): "The provided set does not generate a quandle with this associated operation.";
+	require isQuandle(QuandleMatrix(T), [1..#T`Set]): "The provided set does not generate a quandle with this associated operation.";
         
     return T;
 end intrinsic;
@@ -215,7 +215,7 @@ intrinsic CosetQuandle(G :: Grp, H :: Grp, f :: GrpAutoElt) -> HomQndl
    
     
 	// If, for any reason, the provided set and this operation do not form a quandle, the function will not return anything.
-	require isQuandle(QuandleMatrix(T)): "The provided set does not generate a quandle with this associated operation.";
+	require isQuandle(QuandleMatrix(T),[1..#T`Set]): "The provided set does not generate a quandle with this associated operation.";
         
     return T;
 end intrinsic;

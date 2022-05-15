@@ -1,8 +1,9 @@
 
 /*
  * Input: 
- *	permutation_sigma, a sequence representing a permutation of some subset [1 .. n] of the Integers.
+ *	permutation_sigma, a sequence representing a permutation of some subset of the Integers.
  *	M, a square Matrix - an integral quandle matrix
+ *  expected, a boolean flag indicating whether the underlying set is expected({1..n}, for some n in N) or not.
  *
  * Output: 
  *	Let s be the permutation represented by permutation_sigma;  for example: permutation_sigma: [3 1 2] means that s(1) = 3, s(2) = 1, s(3) = 2.
@@ -10,18 +11,31 @@
  * 	sigma_M, s(M) - each entry m of M has been replaced by s(m).
  *	Transpose(Ps), it is the transpose of Ps and since Ps is an orthogonal matrix, Transpose(Ps) is also the inverse of Ps. 
  */
-intrinsic getPermutationMatrices(permutation_sigma :: SeqEnum[RngIntElt], M :: AlgMatElt[RngInt]) -> AlgMatElt[RngInt], AlgMatElt[RngInt], AlgMatElt[RngInt]
+intrinsic getPermutationMatrices(permutation_sigma :: SeqEnum[RngIntElt], M :: AlgMatElt[RngInt], expected :: BoolElt) -> AlgMatElt[RngInt], AlgMatElt[RngInt], AlgMatElt[RngInt]
 { Given a matrix and a permutation of some subset [1 .. n] of the Integers, it returns a 3-tuple containing the corresponding permutation matrix, its inverse and the matrix after applying the provided permutation }
+	
+	uSet := Sort(permutation_sigma);
+	
 	sigma_M := M;
 	for row := 1 to Nrows(M) do
 		for column := 1 to Ncols(M) do
 			// Replaces each entry m of M by its image under the permutation and store the result in sigma_M
-			sigma_M[row, column] := permutation_sigma[M[row,column]];
+			if expected then 
+				sigma_M[row, column] := permutation_sigma[M[row,column]];
+			else 
+				sigma_M[row, column] := permutation_sigma[Index(uSet, M[row,column])];
+			end if;
+
 		end for;
 	end for;
 	
 	// Computes the permutation matrix corresponding to the provided permutation
-    Ps := PermutationMatrix(Integers(), permutation_sigma);
+   if expected then 
+		Ps := PermutationMatrix(Integers(), permutation_sigma);
+	else
+		Ps := PermutationMatrix(Integers(), [ Index(uSet, x) : x in permutation_sigma]);
+	end if;
+
     return Ps, sigma_M, Transpose(Ps);
 end intrinsic;
 
@@ -37,9 +51,10 @@ intrinsic Aut_set(M :: AlgMatElt[RngInt], permutations :: GrpPerm) -> SetEnum[Se
 { Finds the underlying set of the automorphism group of M }	
 	Aut := {};
 	
+	expected := IsSubsequence([1..Nrows(M)], Eltseq(M[1]): Kind := "Setwise");
 	for element in permutations do
 		sigma := Eltseq(element);
-		Ps, sigma_M, TPs := getPermutationMatrices(sigma,M);
+		Ps, sigma_M, TPs := getPermutationMatrices(sigma,M, expected);
 	
 		/*
 		 * Left multiplication by TPs(the inverse of the permutation matrix Ps reorders the rows of the matrix)
@@ -66,24 +81,16 @@ end intrinsic;
 intrinsic AutQuandle(M :: SeqEnum[SeqEnum[RngIntElt]]) -> GrpPerm
 { Finds the automorphism group of M }
 
-	permutations := Normaliser(Sym(#M),Inn(M));
+	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
+	S_X := Sym({@ x : x in Sort(M[1])@});
+
+	permutations := Normaliser(S_X,Inn(M));
 	
 	// Obtains the set of automorphisms	
 	Aut_set := Aut_set(Matrix(#M, #M, M), permutations);
 	
-	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
-	S_X := Sym(#M);
-
-	// Initialises an empty list 
-	Sym_elements := [];
-
-	for automorphism in Aut_set do
-		// Transforms each permutation into an element of the symmetric group and add it to the list
-		Append(~Sym_elements, S_X ! automorphism);
-	end for;
-	
 	// Generates the Permutation Group with the permutations found above as generators.
-	return sub< S_X | Sym_elements >;
+	return sub< S_X | [ S_X ! automorphism : automorphism in Aut_set]>;
 end intrinsic;
 
 
@@ -98,19 +105,10 @@ intrinsic Inn(M :: SeqEnum[SeqEnum[RngIntElt]]) -> GrpPerm
 	
 
 	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
-	S_X := Sym(#M);
-	
-	// Initialises an empty list 
-	Sym_elements := [];
-	
-
-	for permutation in M do
-		// Transforms each permutation(Lx(X), where X is the underlying set of the quandle) into an element of the symmetric group and add it to the list
-		Append(~Sym_elements, S_X ! permutation);
-	end for;
+	S_X := Sym({@ x : x in Sort(M[1])@});
 	
 	// Generates the Permutation Group with the permutations found above as generators.
-	return sub< S_X | Sym_elements >;
+	return sub< S_X | [S_X ! permutation : permutation in M] >;
 end intrinsic;
 
 
@@ -123,7 +121,7 @@ end intrinsic;
  */
 intrinsic Np(M :: SeqEnum[SeqEnum[RngIntElt]]) -> RngIntElt
 { It returns the number of standard form integral quandle matrices in the p(ermutation)-equivalence class of the quandle represented by M }
-	return (Factorial(#M))/(# Aut(M));
+	return (Factorial(#M))/(# AutQuandle(M));
 end intrinsic;
 
 
@@ -142,6 +140,7 @@ intrinsic isLatin(M :: SeqEnum[SeqEnum[RngIntElt]]) -> BoolElt
 	 * Then it checks that in each row and each column, each value appears exactly once.
 	 */	
 	
-	return checkRows(M) and checkRows(Transpose(M));
+	uSet := Sort(M[1]);
+	return checkRows(M, uSet) and checkRows(Transpose(M), uSet);
 end intrinsic;
 

@@ -5,87 +5,12 @@
 
 // Contrary to COMPUTING CONGRUENCES EFFICIENTLY by RALPH FREESE, the root of a tree(block of a partition) here is the minimum element.
 
-
 /* 
  * N. Carrivale
- * Input: 
- * A partition pi of X = {1,2 ... n}, for n in N - as a sequence of sequences.
- * sort : a flag to indicate whether the block must be sorted or not.
- * 
- * Output: pi encoded as explained in CRP1. 
- */
-intrinsic EncodePartition(pi :: SeqEnum[SeqEnum[RngIntElt]], sort :: BoolElt) -> SeqEnum[RngIntElt]
-{ It encodes a partition of some set X as explained in CRP1 }
-
-    // Creates the sequence that will hold the encoded partition
-    encoding := [];
-    
-    // Loops over all the blocks of the partition
-    for index_1 := 1 to #pi do
-
-        block := pi[index_1];
-
-
-        // Sorts the block if necessary - the minimum element must be the first element of a block
-        block := sort select Sort(block) else block;
-        
-        /*
-         * Loops over all the blocks after the current block;
-         * This is enough because we know that "disjoint-ness" with precedent blocks has already been verified.
-         */
-        for index_2 := index_1+1 to #pi  do
-            block2 := pi[index_2];
-            for element in block2 do
-                error if element in block, "The elements of this sequence are not pairwise disjoint.";
-            end for;
-        end for;
-        
-        // In the unlikely event that a partition contains an empty block, this makes the computation continue elegantly
-        try
-            encoding[block[1]] := - (#block);
-        catch empty
-            continue;
-        end try;
-
-        for index_2 := 2 to #block do
-            encoding[block[index_2]] := block[1];
-        end for;
-
-    end for;
-
-    
-
-    return encoding;
-
-end intrinsic;
-
-/*
- * N. Carrivale
- * Input:  A partition pi of X = {1,2 ... n}, for n in N - as a set of sets.
- *
- *
- * Output: pi encoded as explained in CRP1.
- */
-intrinsic EncodePartition(pi :: SetEnum[SetEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
-{ It encodes a partition of some set X as explained in CRP1 }
-
-
-    // Turns a set of sets into a set of sequences
-    seqseqs := [];
-    for element in pi do
-        Append(~seqseqs, Sort(Setseq(element)));
-    end for;
-
-    return EncodePartition(seqseqs, false);
-    
-end intrinsic;
-
-/* 
- * N. Carrivale
- * Input: M, A binary operation on X = {1,2 ... n}, represented by a sequence of sequences, for n in N.
+ * Input: M, A binary operation on some subset of N with cardinality n, represented by a square sequence of sequences.
  * 
  *
- * Output: It returns a sequence containing all the distinct unary operations on X induced by the (possibly) binary operations on X in F.
+ * Output: It returns a sequence containing all the distinct unary operations on X induced by the binary operation M.
  */
 intrinsic UnarifyOperation(M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
 { Returns a sequence containing all the distinct unary operations on X induced by the binary operation. }
@@ -94,7 +19,7 @@ intrinsic UnarifyOperation(M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[
      * The algorithm described by Ralph Freese in COMPUTING CONGRUENCES EFFICIENTLY
      * only works with unary algebras, that is, algebras with only unary operations.
      *
-     * Hence we need to convert binary operatio to 2n unary operations where n is the cardinality of X.
+     * Hence we need to convert binary operation to 2n unary operations where n is the cardinality of X.
      */
 
     /* 
@@ -109,7 +34,7 @@ intrinsic UnarifyOperation(M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[
      */
     
    
-    X := [1 .. #M];
+    X := Sort(M[1]);
 
    
     UnaryOperations := [];
@@ -124,13 +49,12 @@ intrinsic UnarifyOperation(M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[
             try 
                 resultrow := M[index_1, index_2];
                 resultcolumn := M[index_2, index_1];
+                error if resultrow notin X, "This multiplication table does not represent an operation.";
+                error if resultcolumn notin X, "This multiplication table does not represent an operation.";
             catch IndexError
                 error "This operation is not defined properly";
             end try;
-
-            
-
-            
+ 
 
             /* 
              * Let index_1 be i and index_2 be j.
@@ -164,42 +88,6 @@ intrinsic UnarifyOperation(M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[
 end intrinsic;
 
 
-/* 
- * N. Carrivale
- * Input: Let A = <X = {1, 2, ..., n}, F> be an algebra, for some n in N. 
- * F : A sequence of operations on X represented by sequences of sequences.
- * 
- * Output: It returns a sequence containing all the distinct unary operations on X induced by the binary operations on X in F.
- * Note: Since the goal of this project is to work with quandles we only need to handle one binary operation but 
- * the translation of CREAM into MAGMA might be useful to us or other people so I am trying to keep things as general as possible
- * where doing it is easy enough. 
- */
-intrinsic UnarifyAlgebra(F :: SeqEnum[SeqEnum[SeqEnum[RngIntElt]]]) -> SeqEnum[SeqEnum[RngIntElt]]
-{ Returns a sequence containing all the distinct unary operations on X induced by the binary operations on X in F. }
-
-    
-    
-    // Creates the list where the unary operations will be stored
-    unarifiedOperations := [];
-
-    last := #F[1];
-
-    for f in F do
-        // Checks that the cardinality of the sets on which the function are supposed to operate is always the same
-      
-        error if #f ne last, "The sequence contains functions with different domains. ";
-        
-
-        
-
-        unarifiedOperation := UnarifyOperation(f);
-
-        // After the binary operation has been unarified, it verifies that the induced unary operations have not already been seen.
-        unarifiedOperations := IsSubsequence(unarifiedOperation, unarifiedOperations: Kind := "Setwise") select unarifiedOperations else (unarifiedOperation cat unarifiedOperations);
-    end for;
-
-    return unarifiedOperations;
-end intrinsic;
 
 
 
@@ -375,31 +263,41 @@ end intrinsic;
 
 /*
  * CREAM & COMPUTING CONGRUENCES EFFICIENTLY by R. Freese
- * Input: Let A = <X = {1, 2, ..., n}, F> be a unary or "unarified" algebra, for some n in N.
- * F : A sequence of operations on X represented by sequences of sequences.
- * A pair <a, b> with a, b in X.
- *
+ * Input: Let A = <X, F> be a unary or "unarified" binary algebra.
+ * X : the (labels of the) underlying set of A as a sorted sequence.
+ * F : A sequence of unary operations on X represented by a sequence of sequences.
+ * GeneratingPair : A pair <a, b> with a, b in X.
+ * expected: a boolean flag indicating whether X is the expected set with n elements({1..n}) or not. 
+ * 
  *
  * Output: The principal congruence generated by a and b in A.
  */
-intrinsic PrincipalCongruence(F :: SeqEnum[SeqEnum[RngIntElt]], GeneratingPair :: Tup) -> SeqEnum[RngIntElt]
+intrinsic PrincipalCongruence(X :: SeqEnum[RngIntElt], F :: SeqEnum[SeqEnum[RngIntElt]], GeneratingPair :: Tup, expected :: BoolElt) -> SeqEnum[RngIntElt]
 { It returns the principal congruence generated by a and b in A }
     Pairs := [ GeneratingPair ];
 
-    congruence := EncodePartition(Partition([1 .. #F[1]],1), false);
-    congruence := JoinBlocks(GeneratingPair[1], GeneratingPair[2], congruence); 
+    congruence := [ -1 : x in F[1] ];
+
+    if expected then 
+        congruence := JoinBlocks(GeneratingPair[1], GeneratingPair[2], congruence); 
+    else
+        congruence := JoinBlocks(Index(X,GeneratingPair[1]), Index(X,GeneratingPair[2]), congruence); 
+    end if;
     
     while not IsEmpty(Pairs) do
         Pair := Pairs[1];
         Remove(~Pairs, 1);
         for f in F do
-            root1, congruence := RootBlock(f[Pair[1]], congruence);
-            
-            root2, congruence := RootBlock(f[Pair[2]], congruence);
-            
+            if expected then 
+                root1, congruence := RootBlock(f[Pair[1]], congruence);
+                root2, congruence := RootBlock(f[Pair[2]], congruence);
+            else 
+                root1, congruence := RootBlock(Index(X, f[Index(X, Pair[1])]), congruence);
+                root2, congruence := RootBlock(Index(X, f[Index(X, Pair[2])]), congruence);
+            end if;
             if root1 ne root2 then 
                 congruence := JoinBlocks(root1, root2, congruence);
-                Append(~Pairs, <root1, root2>);
+                Append(~Pairs, <X[root1], X[root2]>);
             end if;
 
         end for;
@@ -412,18 +310,22 @@ end intrinsic;
 
 /*
  * CREAM
- * Input: Let A = <X = {1, 2, ..., n}, F> be a unary or "unarified" algebra, for some n in N.
- *  F : A sequence of operations on X represented by sequences of sequences.
+ * Input: Let A = <X, F> be a unary or "unarified" algebra.
+ *  F : A sequence of unary or "unarified" operations on X represented by a sequence of sequences.
  *
  *
  * Output: All the principal congruences of A.
  */
 intrinsic AllPrincipalCongruences(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SeqEnum[RngIntElt]]
-{ It returns all the principal congruences in A }
+{ It returns all the principal congruences of A }
    congruences := {@ @};
+
+   uSet := Sort(F[1]);
+   expected := IsSubsequence([1..#F], uSet: Kind := "Setwise");
+
    for index_1 := 1 to ((#F[1]) - 1) do
         for index_2 := (index_1 + 1) to #F[1]  do
-            congruence := PrincipalCongruence(F, <index_1, index_2>);
+            congruence := PrincipalCongruence(uSet, F, <uSet[index_1], uSet[index_2]>, expected);
 
             Include(~congruences, congruence);
             
@@ -435,8 +337,8 @@ end intrinsic;
 
 /*
  * CREAM
- * Input: Let A = <X = {1, 2, ..., n}, F> be a unary or "unarified" algebra, for some n in N.
- *  F : A sequence of operations on X represented by sequences of sequences.
+ * Input: Let A = <X, F> be a unary or "unarified" binary algebra.
+ *  F : A sequence of unary or "unarified" operations on X represented by a sequence of sequences.
  *
  *
  * Output: All the congruences of A.
@@ -484,11 +386,12 @@ end intrinsic;
 intrinsic EfficientGeneratingSet(F :: Qndl) -> SetEnum[RngIntElt]
 { It returns a generating set for F. }
 
-    RSQM := QuandleMatrix(F);
-    candidates := InvariantPartition(RSQM, InvariantMap(RSQM));
+    expected := IsSubsequence([1..#F`Set], F`Set: Kind := "Setwise");
+    RSQM := MappifyOperation(F`Set, QuandleMatrix(F), expected);
+    candidates := InvariantPartition(InvariantMap(F`Set,RSQM));
 
         
-    return EfficientGeneratingSet(RSQM, candidates);
+    return EfficientGeneratingSet(F`Set, RSQM, candidates);
    
 end intrinsic;
 
@@ -497,32 +400,32 @@ end intrinsic;
 
 /*
  * CREAM
- * Input: Let A = <X = {1, 2, ..., n}, F> be binary algebra with a single operation.
- *  F : The binary operation on X represented by sequences of sequences.
+ * Input: Let A = <X, F> be binary algebra with a single operation.
+ *  uSet : X as a sorted sequence. 
+ *  F : The binary operation on X represented by a MAGMA Map.
  *  candidates: a partition of X.
  *
  *
  * Output: A generating set for A
  */
-intrinsic EfficientGeneratingSet(F :: SeqEnum[SeqEnum[RngIntElt]], candidates :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[RngIntElt]
+intrinsic EfficientGeneratingSet(uSet :: SeqEnum, F :: Map[SetCart, SeqEnum[RngIntElt]], candidates :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[RngIntElt]
 { It returns a generating set for A }
 
     submagma := {};
-    generator := {@ @};
+    generator := { };
     
-
         
-    while #submagma ne #F do
+    while #submagma ne #uSet do
         most := <0,0,{}>;
         for index_block := 1 to #candidates do
             for index_element := 1 to #candidates[index_block] do
-                generated := generatedSet(generator join {@ candidates[index_block][index_element] @}, {@ @}, F);
+                generated := generatedSet(generator join { uSet[candidates[index_block][index_element]] }, { }, F);
                 if #generated gt #most[3] then 
                      most := <index_block,index_element,generated>;
                 end if;
             end for;
         end for;
-        Include(~generator, candidates[most[1]][most[2]]);
+        Include(~generator, uSet[candidates[most[1]][most[2]]]);
         submagma := most[3];
         try 
             Remove(~candidates[most[1]],most[2]);
@@ -538,8 +441,9 @@ end intrinsic;
 
 /*
  * CREAM + Niccolò Carrivale - Specific for quandles
- * Input: Let A = <X = {1, 2, ..., n}, F> be binary algebra with a single operation.
- *  F : The binary operation on X represented by sequences of sequences.
+ * Input: Let A = <X, F> be binary algebra with a single operation.
+ *  uSet : X as a sorted sequence of n elements. 
+ *  F : The binary operation on X represented by a MAGMA Map.
  *
  *
  * Output: A sequence S with n elements S[i] = [a, b, c, d, e] where 
@@ -549,35 +453,39 @@ end intrinsic;
  * d is the value of invariant 11 for the i-th element.
  * e is the value of invariant 17 for the i-th element.
  */
-intrinsic InvariantMap(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
+intrinsic InvariantMap(uSet :: SeqEnum, F :: Map[SetCart, SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
 { Returns the sequence containing the values of invariants 2, 3, 6, 11 and 17 in CR1 for each element of X }
 
     invariant_vector := [ ];
     partition_ := [];
-    uSet := {};
-    for index_1 := 1 to #F do
+    
+    for index_1 := 1 to #uSet do
         
         invariant_2 := 0;
         invariant_3 := 0;
         invariant_6 := [];
         invariant_11 := 0;
-        uSet := uSet meet { index_1 };
-        for index_2 := 1 to #F do
+        
+        for index_2 := 1 to #uSet do
 
-            if F[index_1,index_2] eq index_2 then 
+            result_1 := F(<uSet[index_1],uSet[index_2]>);
+            result_2 := F(<uSet[index_2],uSet[index_1]>);
+
+
+            if result_1 eq uSet[index_2] then 
                 invariant_2 := invariant_2 + 1;
             end if;
 
-            if F[index_2,index_1] eq index_2 then 
+            if result_2 eq uSet[index_2] then 
                 invariant_3 := invariant_3 + 1;
             end if;
 
-            if F[index_1,index_2] eq F[index_2,index_1] then 
+            if result_1 eq result_2 then 
                 invariant_11 := invariant_11 + 1;
             end if;
 
-            if F[index_1,index_2] notin invariant_6 then 
-                Append(~invariant_6, F[index_1, index_2]);
+            if result_1 notin invariant_6 then 
+                Append(~invariant_6, result_1);
             end if;
 
         end for;
@@ -586,17 +494,18 @@ intrinsic InvariantMap(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngI
 
     end for;
 
-    subs := Subsets(uSet, 2);
+    subs := Subsets(Seqset(uSet), 2);
 
-    for index_1 := 1 to #F do
+    for index_1 := 1 to #uSet do
 
         invariant_17 := [];
 
         for t in subs do
             t_seq := [ x : x in t];
 
-            a := F[t_seq[1]][t_seq[2]];
-            b := F[t_seq[2]][t_seq[1]];
+            a := F(<t_seq[1],t_seq[2]>);
+            b := F(<t_seq[2],t_seq[1]>);
+
             if a eq index_1 and b notin invariant_17 then 
                 Append(~invariant_17, b);
             end if;
@@ -614,15 +523,13 @@ end intrinsic;
 
 /*
  * CREAM + Niccolò Carrivale - Specific for quandles
- * Input: Let A = <X = {1, 2, ..., n}, F> be binary algebra with a single operation.
- *  F : The binary operation on X represented by sequences of sequences.
+ * Input: Let A = <X, F> be binary algebra with a single operation.
  *  Invariants : A sequence [x1, x2, ..., xn] inducing an equivalence relation.
  *
- * Output: The set X partitioned according to the equivalence relation induced by the sequence 'Invariants',
- * with blocks sorted by ascending block size.
+ * Output: The partion on {1..n} induced by the sequence 'Invariants'. 
  */
-intrinsic InvariantPartition(F:: SeqEnum[SeqEnum[RngIntElt]], Invariants :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
-{ The set X partitioned according to the equivalence relation induced by the sequence 'Invariants' }
+intrinsic InvariantPartition(Invariants :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
+{ The parition induced by the equivalence relation 'Invariants' }
     
     
     seen := [];
@@ -647,13 +554,13 @@ end intrinsic;
 /*
  * CREAM + Niccolò Carrivale 
  * Input: 
- *  A potential subquandle of M of cardinality n, F, 
+ *  A potential subquandle of M with cardinality n, F, 
  *  A quandle, M.
  *
  *
  * Output: 
  * [], if there is no monomorphism from F to M.
- * [ f(a_1), f(a_2), ..., f(a_n)] where a_i in F, for 1 <= i <= n.
+ * [ f(a_1), f(a_2), ..., f(a_n)] where a_i in F, if there is a monomorphism from F to M.
  */
 intrinsic Monomorphism(F :: Qndl, M :: Qndl) -> SeqEnum[RngIntElt]
 { Returns, if it exists, a monomorfism from F to M }
@@ -665,35 +572,40 @@ end intrinsic;
 
 /*
  * CREAM + Niccolò Carrivale 
- * Input: Let A = <X = {1, 2, ..., n}, F> be a binary algebra with a single operation, for some n in N.
- * Let B = <Y = {1, 2, ..., m}, M> be a binary algebra with a single operation, for some m in N.
+ * Input: Let A = <X, F> be a binary algebra with a single operation, with n elements.
+ * Let B = <Y, M> be a binary algebra with a single operation, with m elements.
  * Let n <= m.
  *
- *  F : The binary operation on X represented by sequences of sequences.
- *  M : The binary operation on Y represented by sequences of sequences.
+ *  F : The binary operation on X represented by a sequence of sequences.
+ *  M : The binary operation on Y represented by a sequence of sequences.
  *
  * Output: 
  * [], if there is no monomorphism from F to M.
- * [ f(a_1), f(a_2), ..., f(a_n)] where a_i in F, for 1 <= i <= n.
+ * [ f(a_1), f(a_2), ..., f(a_n)] where a_i in F, if there is a monomorphism from F to M.
  */
 intrinsic Monomorphism(F :: SeqEnum[SeqEnum[RngIntElt]], M :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { Returns, if it exists, a monomorfism from A to B }
-    FInvMap := InvariantMap(F);
-    MInvMap := InvariantMap(M);
-
-    // Very small set - often no more than 3 elements 
-    FGenSet := Setseq(EfficientGeneratingSet(F, InvariantPartition(F, FInvMap)));
 
     if #F gt #M then 
         return [];
     end if;
+
+    uSetF := Sort(F[1]);
+    uSetM := Sort(M[1]);
+    mapF := MappifyOperation(uSetF, F, IsSubsequence([1..#uSetF], uSetF: Kind := "Setwise"));
+    mapM := MappifyOperation(uSetM, M, IsSubsequence([1..#uSetM], uSetM: Kind := "Setwise"));
+    FInvMap := InvariantMap(uSetF, mapF);
+    MInvMap := InvariantMap(uSetM, mapM);
+
+    // Very small set - often no more than 3 elements 
+    FGenSet := Setseq(EfficientGeneratingSet(uSetF,  mapF, InvariantPartition(FInvMap)));
     
     mapsTo := [ [] : x in FGenSet  ];
 
     for index_M := 1 to #M do
         for index_mapsTo := 1 to #FGenSet do
             
-            if FInvMap[FGenSet[index_mapsTo]] le MInvMap[index_M] then
+            if FInvMap[Index(uSetF, FGenSet[index_mapsTo])] le MInvMap[index_M] then
                 Append(~mapsTo[index_mapsTo],index_M);
             end if;
 
@@ -706,8 +618,7 @@ intrinsic Monomorphism(F :: SeqEnum[SeqEnum[RngIntElt]], M :: SeqEnum[SeqEnum[Rn
         end if;
     end for;
 
-
-    monomorphism := ExtendMonomorphism(F, M, FGenSet, mapsTo, [ 0 : index in F ]);
+    monomorphism := ExtendMonomorphism(uSetF, mapF, mapM, FGenSet, mapsTo, [ 0 : index in F ]);
 
     return monomorphism;
     
@@ -718,28 +629,31 @@ end intrinsic;
 
 /*
  * CREAM + Niccolò Carrivale - This is a recursive function
- * Input: Let A = <X = {1, 2, ..., n}, F> be a binary algebra with a single operation, for some n in N.
- * Let B = <Y = {1, 2, ..., m}, M> be a binary algebra with a single operation, for some m in N.
+ * Input: Let A = <X, F> be a binary algebra with a single operation, with n elements.
+ * Let B = <Y, M> be a binary algebra with a single operation, with m elements.
  * Let n <= m.
  *
- *  F : The binary operation on X represented by sequences of sequences.
- *  M : The binary operation on Y represented by sequences of sequences.
+ *  F : The binary operation on X represented by a sequence of sequences.
+ *  M : The binary operation on Y represented by a sequence of sequences.
  *  FGenSet : A generating set for A.
  *  Images : A sequence holding the possible images for the elements of FGenSet.
  *  morphism : A sequence that hold the current status of the morphism under construction such that morphism[i] indicates the image of i under the morphism. 
  *              f[i] = 0 indicates that an image has not yet been defined. 
  *
  * Output: 
+ * [], if there is no monomorphism from F to M.
+ * [ f(a_1), f(a_2), ..., f(a_n)] where a_i in F, if there is a monomorphism from F to M.
  */
-intrinsic ExtendMonomorphism(F :: SeqEnum[SeqEnum[RngIntElt]], M :: SeqEnum[SeqEnum[RngIntElt]], FGenSet :: SeqEnum[RngIntElt], Images :: SeqEnum[SeqEnum[RngIntElt]], morphism :: SeqEnum[RngIntElt] ) -> SeqEnum[RngIntElt]
-{ TODO }
-    
+intrinsic ExtendMonomorphism(uSetF :: SeqEnum[RngIntElt], F :: Map[SetCart, SeqEnum[RngIntElt]], M :: Map[SetCart, SeqEnum[RngIntElt]], FGenSet :: SeqEnum[RngIntElt], Images :: SeqEnum[SeqEnum[RngIntElt]], morphism :: SeqEnum[RngIntElt] ) -> SeqEnum[RngIntElt]
+{ Returns, if it exists, a monomorfism from A to B }
     
     
     if IsEmpty(FGenSet) then 
+        
         OldElements := {};
-        NewElements := { y : y in [1 .. #F] | morphism[y] ne 0 };
-
+        
+        
+        NewElements := { uSetF[y] : y in [1 ..#morphism] | morphism[y] ne 0 };
         
         while not IsEmpty(NewElements) do
            
@@ -762,15 +676,16 @@ intrinsic ExtendMonomorphism(F :: SeqEnum[SeqEnum[RngIntElt]], M :: SeqEnum[SeqE
             for product in Products do
                 a := product[1];
                 b := product[2];
-                result_in_A := F[a][b];
-                result_in_B := M[morphism[a]][morphism[b]];
+                temp_result := F(<a,b>);
+                result_in_A := morphism[Index(uSetF, temp_result)];
+                result_in_B := M(<morphism[Index(uSetF,a)],morphism[Index(uSetF,b)]>);
                     // Preserves injectivity
-                if (morphism[result_in_A] eq 0) and (result_in_B notin morphism) then 
-                    morphism[result_in_A] := result_in_B;
-                    Results := Results join { result_in_A };
+                if (result_in_A eq 0) and (result_in_B notin morphism) then 
+                    morphism[Index(uSetF,temp_result)] := result_in_B;
+                    Include(~Results, temp_result);
                 else 
                     // verifies Def2.1* Universal Algebra - Morphism
-                    if morphism[result_in_A] ne result_in_B then 
+                    if morphism[Index(uSetF,temp_result)] ne result_in_B then 
                         return [];
                     end if;
                 end if;
@@ -783,20 +698,20 @@ intrinsic ExtendMonomorphism(F :: SeqEnum[SeqEnum[RngIntElt]], M :: SeqEnum[SeqE
         return morphism;
     end if;
 
-    preImage := FGenSet[ 1 ];
+    preImage := Index(uSetF,FGenSet[ 1 ]);
     Remove(~FGenSet, 1);
-    Remove(~Images, 1);
+   
 
     // Preserves injectivity
-    availableImages := [ y : y in M[1] | y notin morphism ];
-    
+    availableImages := [ y : y in Images[1] | y notin morphism ];
+    Remove(~Images, 1);
 
     for availableImage in availableImages do
 
         updatedMorphism := morphism;
         updatedMorphism[preImage] := availableImage;
 
-        updatedMorphism := ExtendMonomorphism(F, M, FGenSet, Images, updatedMorphism);
+        updatedMorphism := ExtendMonomorphism(uSetF, F, M, FGenSet, Images, updatedMorphism);
         
         if updatedMorphism ne [] then 
             return updatedMorphism;
@@ -845,7 +760,7 @@ intrinsic QuotientQuandleDP(Q_1 :: SeqEnum[SeqEnum[RngIntElt]], Q_2 :: SeqEnum[S
         return false;
     end if;
 
-    F := UnarifyAlgebra([Q_1]);
+    F := UnarifyOperation(Q_1);
     congruencesA := AllCongruences(F);
 
 
@@ -871,11 +786,11 @@ end intrinsic;
  * element : An element of X.
  *
  *
- * Output: Let S be a subset of R. Let us defined a * S = { a * s : s in S } and S * a = { s * a : s in S}, for a in R. 
+ * Output: Let S be a subset of R. Let us define a * S = { a * s : s in S } and S * a = { s * a : s in S}, for a in R. 
  * The function returns (S * a) U (a * S)
  */
-intrinsic SubuniverseElement(F :: SeqEnum[SeqEnum[RngIntElt]], subQ :: SetEnum[RngIntElt], element :: RngIntElt) -> SetEnum[RngIntElt]
-{ Expands subQ by with element, ensuring it is still closed under the operation of the quandle }
+intrinsic SubuniverseElement(F :: Map[SetCart, SeqEnum[RngIntElt]], subQ :: SetEnum[RngIntElt], element :: RngIntElt) -> SetEnum[RngIntElt]
+{ Expands subQ by element, ensuring it is still closed under the operation of the quandle }
     
     Elements := { element };
 
@@ -891,19 +806,19 @@ intrinsic SubuniverseElement(F :: SeqEnum[SeqEnum[RngIntElt]], subQ :: SetEnum[R
 
         ExtractRep(~Elements, ~current);
 
-        ElementsExpanded := { F[current][current] };
+        ElementsExpanded := { F(<current,current>) };
     
         for subElement in subQExpanded do
-            Include(~ElementsExpanded, F[current][subElement]);
-            Include(~ElementsExpanded, F[subElement][current] );
+            Include(~ElementsExpanded, F(<current,subElement>));
+            Include(~ElementsExpanded, F(<subElement,current>) );
         end for;
     
         Include(~subQExpanded, current);
         
         Elements := Elements join (ElementsExpanded diff subQExpanded) ;
         No_Elements := #Elements;
-        if (#subQExpanded + No_Elements) eq #F then 
-            subQExpanded := { 1 .. #F };
+        if (#subQExpanded + No_Elements) eq #Codomain(F) then 
+            subQExpanded := subQExpanded join Elements;
             No_Elements := 0;
         end if;
     end while; 
@@ -937,6 +852,8 @@ end intrinsic;
 intrinsic Subuniverses(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SetEnum[RngIntElt]]
 { Returns all the subuniverses of quandle Q }
     AutQ := AutQuandle(F);
+    uSetF := Sort(F[1]);
+    mapF := MappifyOperation(uSetF, F, IsSubsequence([1..#uSetF], uSetF: Kind := "Setwise"));
     BaseSubalgebras := {@ @};
     SubalgebrasExpanded := {@ @};
     for index := 1 to #F do
@@ -944,11 +861,11 @@ intrinsic Subuniverses(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SetEnum[RngI
         PreviousRoundSubalgebras := index eq 1 select {@ { } @} else SubalgebrasExpanded[index-1];
 
         for currentSubalgebra in PreviousRoundSubalgebras do
-            Elements := {1 .. #F} diff currentSubalgebra;
+            Elements := Seqset(uSetF) diff currentSubalgebra;
             while #Elements ne 0 do
                 element := 0;
                 ExtractRep(~Elements,~element);
-                generatedSubuniverse := SubuniverseElement(F, currentSubalgebra, element);
+                generatedSubuniverse := SubuniverseElement(mapF, currentSubalgebra, element);
                 Include(~BaseSubalgebrasElement, generatedSubuniverse);
                 Elements := Elements diff (element^AutQ);
             end while;

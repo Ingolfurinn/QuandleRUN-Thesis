@@ -15,7 +15,7 @@ intrinsic Dis(M :: SeqEnum[SeqEnum[RngIntElt]]) -> GrpPerm
 	
 	
 	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
-	S_X := Sym(#M);
+	S_X := Sym({@ x : x in Sort(M[1])@});
 	
 	// Transforms each permutation(Lx^-1(X) and Ly(X)), where X is the underlying set of the quandle) into an element of the symmetric group, multiplies them and add the result Lx^-1Ly to the list
 	Sym_elements := [ ((S_X ! x)) * ((S_X ! y)^-1): x,y in M ];
@@ -34,13 +34,14 @@ end intrinsic;
  * Output: 
  * True if alpha has the compatibility property, False otherwise.
  */
-intrinsic hasCompatibilityProperty(F :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SetIndx[SetIndx[RngIntElt]]) -> BoolElt
+intrinsic hasCompatibilityProperty(F :: Map[SetCart, SeqEnum[RngIntElt]], alpha :: SetIndx[SetIndx[RngIntElt]]) -> BoolElt
 { Verifies whether the equivalence relation induced by alpha has the compatibility property as defined in A COURSE IN UNIVERSAL ALGEBRA by S. BURRIS and H. P. SANKAPPANAVAR }
 	
-	error if #alpha gt #F, "This is not a partition of X.";
+	error if #alpha gt #Codomain(F), "This is not a partition of X.";
 	
+	uSet := Component(Domain(F),1);
 	for block in alpha do
-		results := { F[x,y] : x, y in block };
+		results := { F(<uSet[x],uSet[y]>) : x, y in block };
 		if results notin alpha then 
 			return false;
 		end if;
@@ -58,7 +59,7 @@ end intrinsic;
  *
  * Output: pi decoded.
  */
-intrinsic DecodePartition(pi :: SeqEnum[RngIntElt], kind :: BoolElt) -> SetIndx[SetIndx[RngIntElt]]
+intrinsic DecodePartition(uSet :: SeqEnum[RngIntElt], pi :: SeqEnum[RngIntElt], kind :: BoolElt) -> SetIndx[SetIndx[RngIntElt]]
 { It decodes a partition of some set X encoded as explained in CRP1 or in HUTCHINSON }
 
     partition := [ ];
@@ -70,10 +71,10 @@ intrinsic DecodePartition(pi :: SeqEnum[RngIntElt], kind :: BoolElt) -> SetIndx[
 
 			try 
 				if  partition[block] ne {@ @} then 
-					Include(~partition[block], index);
+					Include(~partition[block], uSet[index]);
 				end if;
 			catch noBlockError 
-				partition[block] := {@ index @};
+				partition[block] := {@ uSet[index] @};
 			end try;
 
 		end for;
@@ -85,7 +86,7 @@ intrinsic DecodePartition(pi :: SeqEnum[RngIntElt], kind :: BoolElt) -> SetIndx[
 			// A values being less than 0 indicates a root
 			if pi[index] lt 0 then
 				// Creates a block with the root as first element
-				Append(~partition, {@ index @});
+				Append(~partition, {@ uSet[index] @});
 				/*
 				* Loops over the remaining elements of the encoded partition.
 				* This is possible because for any encoded block, the root is always the first element to appear in the encoding
@@ -93,7 +94,7 @@ intrinsic DecodePartition(pi :: SeqEnum[RngIntElt], kind :: BoolElt) -> SetIndx[
 				*/
 				for element_index := index+1 to #pi do
 					if pi[element_index] eq index then
-						Include(~partition[#partition], element_index);
+						Include(~partition[#partition], uSet[element_index]);
 					end if;
 				end for;
 			end if;
@@ -117,8 +118,9 @@ end intrinsic;
 intrinsic Dis_a(M :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SeqEnum[RngIntElt], kind :: BoolElt) -> GrpPerm
 { Finds the displacement group of A relative to congruence alpha }
 
-	return Dis_a(M, DecodePartition(alpha,kind));
+	return Dis_a(M, DecodePartition(Sort(M[1]), alpha,kind));
 end intrinsic;
+
 
 /*
  * Input: 
@@ -134,7 +136,7 @@ intrinsic Dis_a(M :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SetIndx[SetIndx[RngIn
 	error if not hasCompatibilityProperty(M, alpha), "This equivalence relation does not have the compatibility property.";
 
 	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
-	S_X := Sym(#M);
+	S_X := Sym({@ x : x in Sort(M[1])@});
 
 
 	Sym_elements := [ ];
@@ -161,7 +163,7 @@ end intrinsic;
  */
 intrinsic QuotientQuandle(Q :: Qndl, alpha :: SeqEnum[RngIntElt], kind :: BoolElt) -> QuoQndl
 { It generates the quotient quandle Q/alpha }
-	return QuotientQuandle(Q, DecodePartition(alpha, kind));
+	return QuotientQuandle(Q, DecodePartition(Q`Set, alpha, kind));
 end intrinsic;
 
 /*
@@ -175,7 +177,7 @@ end intrinsic;
 intrinsic QuotientQuandle(Q :: Qndl, alpha :: SetIndx[SetIndx[RngIntElt]]) -> QuoQndl
 { It generates the quotient quandle Q/alpha }
 
-	error if not hasCompatibilityProperty(QuandleMatrix(Q), alpha), "This equivalence relation does not have the compatibility property.";
+	error if not hasCompatibilityProperty(Q`Operation, alpha), "This equivalence relation does not have the compatibility property.";
 
 	// Creates the Quandle
     T := New(QuoQndl);
@@ -184,7 +186,7 @@ intrinsic QuotientQuandle(Q :: Qndl, alpha :: SetIndx[SetIndx[RngIntElt]]) -> Qu
 	T`Congruence := alpha;
 
 	element_partition := [];
-    for index in [1 .. # alpha] do
+    for index := 1 to #alpha do
 		element_partition[index] := [];
 		for element in alpha[index] do
 			Append(~element_partition[index], Q`Set[element]);
@@ -192,7 +194,7 @@ intrinsic QuotientQuandle(Q :: Qndl, alpha :: SetIndx[SetIndx[RngIntElt]]) -> Qu
 	end for;
 
 	find_block := function(partition, element)
-					for index in [1 .. # alpha] do
+					for index := 1 to #alpha do
 						for element_in in alpha[index] do
 							if element_in eq element then
 								return index;
@@ -205,7 +207,7 @@ intrinsic QuotientQuandle(Q :: Qndl, alpha :: SetIndx[SetIndx[RngIntElt]]) -> Qu
 	T`Set := [ block[1] : block in element_partition ];
 
 	index_for_element := function(sequence, element)
-                            for index in [1 .. # sequence] do
+                            for index := 1 to #sequence do
                                 if (sequence[index] eq element) then
                                     return index;
                                 end if;
@@ -219,9 +221,9 @@ intrinsic QuotientQuandle(Q :: Qndl, alpha :: SetIndx[SetIndx[RngIntElt]]) -> Qu
 	
 	T`Operation := map< car<T`Set,T`Set> -> [1 .. # T`Set ] | graph >;
 
-
+	
 	// If, for any reason, the provided set and this operation do not form a quandle, the function will not return anything.
-	require isQuandle(QuandleMatrix(T)): "The provided set does not generate a quandle with this associated operation.";
+	require isQuandle(QuandleMatrix(T),[1..#T`Set]): "The provided set does not generate a quandle with this associated operation.";
         
     return T;
 end intrinsic;
@@ -291,37 +293,43 @@ end intrinsic;
 intrinsic Kernel_a(Q :: SeqEnum[SeqEnum[RngIntElt]], alpha :: . , kind :: BoolElt) -> SetEnum
 { Returns the kernel relative to the congruence 'alpha' }
 	
-	error if ExtendedType(alpha) notin [SeqEnum[RngIntElt], SetIndx[SetIndx[RngIntElt]]], "This partition is not of the right type";
+	sets := ExtendedType(alpha) in [SetIndx[SetIndx[RngIntElt]], SetIndx[SetEnum[RngIntElt]], SetEnum[SetEnum[RngIntElt]]];
 
-	sets := ExtendedType(alpha) eq SetIndx[SetIndx[RngIntElt]];
+	error if not(sets or (ExtendedType(alpha) eq SeqEnum[RngIntElt])), "This partition is not of the right type";
+
+	
 
 	dis := Dis(Q);
-
+	
 	ker_set := {};
 	
-	uSet := [1 .. #Q];
+	expected := IsSubsequence([1..#Q], Q[1]: Kind := "Setwise");
+	uSet := Sort(Q[1]);
+	
+
 	
 	for h in dis do
 		admittable := true;
 		for index_a := 1 to #Q do
-			ha := Eltseq(h)[index_a];
+			ha := uSet[index_a]^h;
+			
 			
 			if sets then 
 				ok_round := false;
 				for block in alpha do
-					if ha in block and index_a in block then 
-						ok_round := true;
-						break;
-					end if;
+					if ha in block and uSet[index_a] in block then 
+							ok_round := true;
+							break;
+						end if;
 				end for;
 				admittable := admittable and ok_round;
 			else
 				if kind then 
-					root1, _ := RootBlock(ha, alpha);
+					root1, _ := RootBlock(Index(uSet, ha), alpha);
 					root2, _ := RootBlock(index_a, alpha);
 					admittable := admittable and (root1 eq root2);
 				else 
-					admittable := admittable and (alpha[ha] eq alpha[index_a]);
+					admittable := admittable and (alpha[Index(uSet, ha)] eq alpha[index_a]);
 				end if;
 
 			end if;
@@ -350,7 +358,7 @@ end intrinsic;
  *
  * Output: True, if alpha represents a congruence of Q; False, otherwise. 
  */
-intrinsic isCongruenceLemma1_5(Q :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SetIndx[SetIndx[RngIntElt]]) -> BoolElt
+intrinsic isCongruenceLemma1_5(Q :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SetIndx[SetEnum[RngIntElt]]) -> BoolElt
 { Returns the equivalence relation 'alpha' is a congruence }
 
 	
@@ -369,26 +377,30 @@ intrinsic isCongruenceLemma1_5(Q :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SetInd
 	
 	Dis_ua := Kernel_a(Q, alpha, true);
 
-	// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
-	S_X := Sym(#Q);
+	expected := IsSubsequence([1..#Q], Q[1]: Kind := "Setwise");
+	if not expected then 
+		uSet := Sort(Q[1]);
+		 // Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
+		S_X := Sym({@ x : x in uSet @});
+	else 
+		S_X := Sym(#Q);
+	end if;
+	
 
-
-	Sym_elements := [ ];
 
 	for block in alpha do
 		for x,y in block do
-			permutation := ((S_X ! Q[x])) * ((S_X ! Q[y])^-1);
+			if expected then 
+				permutation := ((S_X ! Q[x])) * ((S_X ! Q[y])^-1);
+			else
+				permutation := ((S_X ! Q[Index(uSet,x)])) * ((S_X ! Q[Index(uSet,y)])^-1);
+			end if;
 			if permutation notin Dis_ua then 
 				return false;
 			end if;
 		end for;
 	end for;
-	
 
-	
-	
-
-	
 	return true;
 end intrinsic;
 
@@ -403,7 +415,7 @@ end intrinsic;
 intrinsic isCongruenceLemma1_5(Q :: SeqEnum[SeqEnum[RngIntElt]], alpha :: SeqEnum[RngIntElt], kind :: BoolElt) -> BoolElt
 { Returns the equivalence relation 'alpha' is a congruence }
 
-return isCongruenceLemma1_5(Q, DecodePartition(alpha, kind));
+return isCongruenceLemma1_5(Q, DecodePartition(Sort(Q[1]),alpha, kind));
 	
 end intrinsic;
 
@@ -428,15 +440,52 @@ end intrinsic;
  */
 intrinsic AllCongruencesLemma1_5(Q :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SeqEnum[RngIntElt]]
 { Returns all the congruences of Q }
-	Partitions := PartitionSet(#Q);
 
+	InnQ := Inn(Q);
 	congruences := {@ @};
-	for partition in Partitions do
-		if isCongruenceLemma1_5(Q, partition, true) then 
-			Include(~congruences, partition);
-		end if;
-	end for;
 
+	
+	expected := IsSubsequence([1..#Q], Q[1]: Kind := "Setwise");
+	uSet := Sort(Q[1]);
+	
+	
+	if IsTransitive(InnQ) then 
+		
+	    congruences := {@ {@ { x : x in Q[1] } @} @};
+		partitions := { {@ block : block in x^InnQ @} : x in AllPartitions(InnQ)};
+		
+		// Creates the symmetric group for n = Number of rows of M, because it expects that the underlying set of the quandle Q represented by the integral quandle matrix M is {1, 2, ..., n}.
+		S_X := Sym({@ x : x in Sort(Q[1])@});
+
+		for alpha in partitions do
+			Dis_ua := Kernel_a(Q, alpha, true);
+			add := true;
+			for block in alpha do
+				for x,y in block do
+
+					if expected then 
+						permutation := ((S_X ! Q[x])) * ((S_X ! Q[y])^-1);
+					else
+						permutation := ((S_X ! Q[Index(uSet,x)])) * ((S_X ! Q[Index(uSet,y)])^-1);
+					end if;
+
+					if permutation notin Dis_ua then
+						add := false; 
+						break;
+					end if;
+				end for;
+				if not add then 
+					break;
+				end if;
+			end for;
+			if add then 
+				Include(~congruences, alpha);
+			end if;
+		end for;
+	else 
+		congruences := {@ DecodePartition(uSet, x, false) : x in AllCongruences(UnarifyOperation(Q)) @};
+	end if;
+	
 	return congruences; 
 	
 end intrinsic;

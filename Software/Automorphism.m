@@ -49,7 +49,7 @@ end intrinsic;
  */
 intrinsic Aut_set(M :: AlgMatElt[RngInt], permutations :: GrpPerm) -> SetEnum[SeqEnum[RngIntElt]]
 { Finds the underlying set of the automorphism group of M }	
-	Aut := {};
+	Auts := {};
 	
 	expected := IsSubsequence([1..Nrows(M)], Eltseq(M[1]): Kind := "Setwise");
 	for element in permutations do
@@ -65,10 +65,10 @@ intrinsic Aut_set(M :: AlgMatElt[RngInt], permutations :: GrpPerm) -> SetEnum[Se
 		
 		// Prtd is isomorphic to M but here it is verified whether M was mapped to itself and if so, the permutation is added to the underlying set of Aut(M).
 		if Prtd eq M then
-			Include(~Aut, sigma);
+			Include(~Auts, sigma);
 		end if;
 	end for;
-	return Aut;
+	return Auts;
 end intrinsic;
 
 

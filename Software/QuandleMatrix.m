@@ -202,7 +202,7 @@ intrinsic checkRows(M :: SeqEnum[SeqEnum[RngIntElt]], uSet : SeqEnum) -> BoolElt
 		 * if any element of uSet appears in M[row], we have a permutation.
 		 * This is because, in QuandleFM we check that uSet has no duplicates. 
 		 */
-		check := check and IsSubsequence(M[row], uSet: Kind := "Setwise");
+		check := check and IsSubsequence(uSet, M[row]: Kind := "Setwise");
 	end for;
 	return check;
 end intrinsic;

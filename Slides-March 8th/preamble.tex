@@ -16,12 +16,18 @@
 \usepackage{amsfonts}
 \usepackage{wasysym}
 \usepackage{subfig}
+\usetikzlibrary{patterns}
+\usepackage{nicematrix}
+\usepackage{media9} 
+\usepackage{multimedia}
+\usepackage{graphicx} % for \animategraphics
+\usepackage{animate} % for \animategraphics
+\usepackage{hyperref} 
 
 
 
 
-\usepackage[backend=biber, bibstyle=nature, sorting=nty, citestyle=numeric-comp]{biblatex} %Custom bibliography
-    \addbibresource{bib.bib} %Load references
+
 
 
 \DeclareMathAlphabet{\mathcalligra}{T1}{calligra}{m}{n}
@@ -144,26 +150,3 @@ middle, xlabel={$x$}, ylabel={$y$}, axis equal }}
 \newcommand{\hlight}[1]{\colorbox{violet!50}{#1}}
 \newcommand{\hlighta}[1]{\colorbox{darkred!50}{#1}}
 
-\newcommand{\neutranie}{\tikz[baseline=-0.75ex,blue2]{
-    \draw circle (1.2mm);
-\node[fill,circle,inner sep=0.3pt] (left eye) at (135:0.5mm) {};
-\node[fill,circle,inner sep=0.3pt] (right eye) at (45:0.5mm) {};
-\draw (-135:0.9mm) -- (-45:0.9mm);
-    }
-}
-
-\newcommand{\neutraniered}{\tikz[baseline=-0.75ex,red2]{
-    \draw circle (1.2mm);
-\node[fill,circle,inner sep=0.3pt] (left eye) at (135:0.5mm) {};
-\node[fill,circle,inner sep=0.3pt] (right eye) at (45:0.5mm) {};
-\draw (-135:0.9mm) -- (-45:0.9mm);
-    }
-}
-
-\newcommand{\neutranieblack}{\tikz[baseline=-0.75ex,black]{
-    \draw circle (1.2mm);
-\node[fill,circle,inner sep=0.3pt] (left eye) at (135:0.5mm) {};
-\node[fill,circle,inner sep=0.3pt] (right eye) at (45:0.5mm) {};
-\draw (-135:0.9mm) -- (-45:0.9mm);
-    }
-}

@@ -1,4 +1,4 @@
-\section{Who Am I}
+\section{Introduction}
  \frame{\sectionpage}
 
 
@@ -6,6 +6,494 @@
 I am Niccolò Carrivale.\newline
 I will be 22 years old in 2 days.\newline
 I study Computer Science in Nijmegen, at Radboud University.\newline
-
-
+I am a student in the Radboud Honours Academy - a two years research experience programme for undergraduate students - which is funding my visit here in Ferrara.\newline
+QuandleRUN serves both as a Bachelor's degree thesis and as my final project for the Radboud Honours Academy.\newline\newline
+I am interested in Algebra and Mathematical Logic. \newline
+I will study Mathematical Logic at the Institute for Logic, Language and Computation of the University of Amsterdam, starting this Fall.\newline\newline
+I \emph{tend to} \textbf{really like} independent work so do get in touch if you have interesting projects for a soon-to-be graduate student. 
 \end{frame}   
+
+\section{The Project}
+\begin{frame}{QuandleRUN}
+QuandleRUN is a library of algorithms focusing on finite quandles that I started developing on February 2022 under the supervision of\newline\newline
+dr. Wieb Bosma - Computer Algebra - Radboud University \newline
+dr. Marco Bonatto - Non-Associative Algebra - University of Ferrara\newline\newline
+QuandleRUN aims to expand the capabilities of the only existing package to work with \textbf{finite} quandles, Rig\footnote{L. Vendramin. Rig, a GAP package for racks, quandles and Nichols algebras. Available at \href{https://github.com/gap-packages/rig/}{https://github.com/gap-packages/rig/} \newline}, while providing a tool useful to researchers. 
+\end{frame} 
+
+\begin{frame}{Computer Algebra and Magma}
+Computer algebra involves developing algorithms to carry out exact computations involving algebraic structures.\newline\newline
+I am working with \textsc{Magma}\footnote{Wieb Bosma, John Cannon, and Catherine Playoust.  The Magma Algebra System I: The User Language. \textit{Journal of Symbolic Computation}, 24(3):235–265, 1997. \newline}; it has an extremely rich collection of algorithms and allows the user to manipulate algebraic structures directly.\newline\newline
+Quandles can benefit from the help of computational tools and attention from the community, much like groups. 
+\end{frame} 
+
+\section{Quandles}
+\frame{\sectionpage}
+
+\begin{frame}{Quandles}
+    \begin{itemize}
+        \item David Joyce indicates quandles as a classifying invariant of knots.
+        \item The quandle axioms are equivalent, in the context of Tietze transformations, to the three Reidemeister moves. 
+        \item Quandles arise as set-theoretical solutions to the quantum Yang-Baxter equation in statistical mechanics. 
+        \item Quandles are spindles - useful tools in studying the relation between a Lie Algebra and its Lie Group. \item Quandles can also be adapted to distinguish the topological types of proteins, thus obtaining \emph{bondles}. 
+    \end{itemize}
+    This motivates the efforts in the study of quandles and the creation of computational tools that can help in such an endeavour.
+\end{frame}
+\begin{frame}{Quandles}
+
+\small
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+ Let us use a Quandle $Q = (X, \bullet)$:
+ \begin{itemize}
+    \item A set: $ X$
+    \item An operation: $\bullet$
+    \item Three axioms: $\forall x, y, z \in X$\begin{itemize}
+        \pause
+        \item[1] $x \bullet  x = x$
+        \pause
+        \item[2]   $\exists! t \in X~y \bullet t$ $= x$ \pause
+        \item[3] $ 
+        x \bullet (y \bullet z) = (x \bullet y) \bullet (x \bullet z) 
+        $ 
+    \end{itemize}
+    
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}  
+\pause
+\tiny Matrices and Finite Quandles by Benita Ho and Sam Nelson
+\Large
+\[M_Q = \begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix}\]
+
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Creating a quandle}
+QuandleRUN does not impose too many restrictions on the labels used to define a quandle - with some simple tweak, most computations would even support nonnumerical labels.\newline
+This flexibility comes at a cost: computations could be slower by a factor of n, where n is the cardinality of the underlying set of the Quandle.
+
+\end{frame}
+
+
+\begin{frame}{ }
+\Large
+\[X = \{a,b,c\}\hspace{2em} M_Q = \begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix}\]\vspace{1em}
+\normalsize
+    Given a \emph{standard} representation, verifying the axioms is pretty simple.\newline
+    This "expands" the idea of \emph{integral quandle matrix} by Nelson and Ho.\newline
+\begin{itemize}
+        \pause
+        \item[1] $ a \bullet  a = a$ - Loop over the elements on the diagonal
+        \pause
+        \item[2] $b~\bullet \textcolor{red2}{c}= a$ - Check whether every row is a permutation of X\pause
+        \item[3] $a \bullet (b \bullet c) = (a \bullet b) \bullet (a \bullet c) $ - Loop over all the elements. 
+    \end{itemize}
+\end{frame}
+\begin{frame}{Core Quandles, n-Conjugation quandles, Coset Quandles}
+Given that \textsc{Magma} can work very easily with groups, QuandleRUN allows the user to create several of the kind of quandles arising from groups. \begin{center}
+    Let $G$ be a group. Let $Fix_G(f) = \{g \in G : f(g) = g\}$, for $f : G \to G$.\newline
+    Let $G/H=\{gH: g \in G\}$.
+\end{center}
+
+\pause
+\begin{alertblock}{Core Quandles}
+    Quandle $Q = ( G;~x \bullet y = xy^{-1}x)$.
+\end{alertblock}
+\pause
+\begin{alertblock}{n-Conjugation Quandles}
+    Let $n \in \mathbb{N}$ be given. Quandle $Q = ( G;~x \bullet y = x^nyx^{-n})$.
+\end{alertblock}
+\pause
+\begin{alertblock}{Coset Quandles}
+    Let $f \in Aut(G)$. Let $H \leq Fix(f)$. \newline Quandle $Q = (G/H;~xH\bullet yH = xf(x^{-1}y)H)$.  
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Connected quandles - Database}
+Rig\footnote{L. Vendramin. Rig, a GAP package for racks, quandles and Nichols algebras. Available at \href{https://github.com/gap-packages/rig/}{https://github.com/gap-packages/rig/} \newline} includes the largest known databse of \textbf{connected} quandles, "hardcoded" in GAP.\newline\newline
+I made it available in \textsc{Magma} and translated it in a handier format, JSON, for portability purposes.
+\end{frame}
+
+\section{Core algorithms}
+\frame{\sectionpage}
+\begin{frame}{Automorphisms}
+
+\[\begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix} \hspace{3em}\sigma = \begin{bmatrix}
+c, a, b
+\end{bmatrix}\]\vspace{1em}
+\[\begin{bmatrix}
+0& 1 & 0 \\
+0 & 0 & 1\\
+1 & 0& 0
+\end{bmatrix} \begin{bmatrix}
+c& b & a \\
+b & a & c\\
+a & c& b
+\end{bmatrix} \begin{bmatrix}
+0& 0 & 1 \\
+1 & 0 & 0\\
+0 & 1& 0
+\end{bmatrix} =\begin{bmatrix}
+b & a & c \\
+a & c & b\\
+c & b & a
+\end{bmatrix}  \begin{bmatrix}
+0& 0 & 1 \\
+1 & 0 & 0\\
+0 & 1& 0
+\end{bmatrix}=\begin{bmatrix}
+a& b & c \\
+b & c & a\\
+c & a& b
+\end{bmatrix}\]\vspace{1em}
+\begin{center}
+    \emph{Why permutations?}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Algorithm}
+Naïve:
+ \begin{itemize}
+     \item Enumerate \textbf{all} permutations of $X$ - $\mathcal{O}(|X|!)$.
+     \item Filter the permutation - $\mathcal{O}(n^{2.37})$. 
+ \end{itemize}
+ \begin{example}
+        Suppose $\mid X \mid = 10$. 
+        \[10! = 3.628.800\]
+        
+     \end{example}
+\begin{center}
+     Is there a way to reduce the number of permutations to be processed \newline \emph{\textbf{on average}}?
+\end{center}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{center}
+    In theory, no - Computing the normalizer is still a task that takes exponential time in some cases. 
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+    In practice, yes, by a lot.
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Algorithm}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\small
+\begin{definition}
+\emph{Inner automorphism group.}
+\[Inn(Q) = \langle L_x : x \in Q \rangle \leq S_Q\]
+A quandle is called \textbf{connected} when $Inn(Q)$ is transitive.
+\end{definition}
+\begin{lemma}
+Let $h : Q \to Q$.
+\[h \in Aut(Q) \implies hL_xh^{-1} = L_{h(x)}\]
+\end{lemma}
+\end{column}
+\begin{column}{0.5\textwidth}
+\small\begin{definition}
+\emph{Normalizer.}\newline
+Let $H$ be a group.\newline
+Let $Y \subseteq G$.
+\[N_H(Y) = \{ h \in H : hYh^{-1} = Y\}\]
+\end{definition}
+\begin{theorem}
+Let $h : Q \to Q$.
+\[h \in Aut(Q) \implies h \in N_{S_X}(Inn(Q))\]
+\end{theorem}
+\end{column}
+\end{columns}
+\begin{center}
+    \textcolor{darkred}{\fbox{We do not need \textbf{all} permutations, only $|N_{S_X}(Inn(Q))|$.}} 
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Algorithm}
+On an Ubuntu terminal with a 3GHz AMD CPU: \newline
+    \begin{center}
+        \begin{tabular}{c|c|c}
+         cardinality & Naïve(seconds) & Smart(seconds) \\
+         1-5 & 0.000 & 0.000 \\
+         6 & 0.020 & 0.000 \\
+         7 & 0.100 & 0.000 \\
+         8 & 1.100 & 0.000 \\
+         9 & 12.000 & 0.000 \\
+         10 & 142.000 & 0.000 \\
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}{Isomorphisms and Monomorphisms}
+\emph{Isomorphism}: two quandles $A$ and $B$ are the same except for the \emph{labels} of their elements, $A \cong B$.\newline
+\emph{Monomorphism}: $A$ can be \emph{embedded} in $B$, $A \hookrightarrow B$.
+\begin{center}
+    \textcolor{darkred}{\fbox{$A \hookrightarrow B \land |A| = n \in \mathbb{N} \land |A| = |B| \implies A \cong B$}} 
+\end{center}
+\small
+\[\begin{bmatrix}
+ a& b& e& f& c& d \\
+     a& \textcolor{red}{b} & \textcolor{red}{f}& e& d& \textcolor{red}{c} \\
+     e& \textcolor{red}{f}& \textcolor{red}{c}& d& a& \textcolor{red}{b} \\
+     f& e& c& d& b& a \\
+     c& d& a& b& e& f \\
+     d& \textcolor{red}{c}& \textcolor{red}{b}& a& e& \textcolor{red}{f} 
+\end{bmatrix} \overset{\phi}{\textcolor{red}{\hookleftarrow}}\begin{bmatrix}
+b& f & c \\
+f & c & b\\
+c & b& f
+\end{bmatrix}
+\overset{\psi}{\textcolor{red}{\cong}} \begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix} \overset{\omega}{\textcolor{red}{\hookrightarrow}}
+\begin{bmatrix}
+ \textcolor{blue}{a}& b& \textcolor{blue}{e}& f& \textcolor{blue}{c}& d \\
+     a& b & f& e& d& c \\
+     \textcolor{blue}{e}& f& \textcolor{blue}{c}& d& \textcolor{blue}{a}& b \\
+     f& e& c& d& b& a \\
+     \textcolor{blue}{c}& d& \textcolor{blue}{a}& b& \textcolor{blue}{e}& f \\
+     d& c& b& a& e& f 
+\end{bmatrix}\]\vspace{1em}
+\begin{columns}
+\begin{column}{0.33\linewidth}
+\begin{center}
+    $\phi: b \mapsto a,~c\mapsto c,~f\mapsto e$\newline
+
+\end{center}
+\end{column}
+\begin{column}{0.33\linewidth}
+\begin{center}
+     $\psi: b \mapsto a,~c\mapsto b,~f\mapsto c$\newline
+\end{center}
+\end{column}
+\begin{column}{0.33\linewidth}
+\begin{center}
+     $\omega: a \mapsto a,~b\mapsto c,~c\mapsto e$\newline
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Algorithm}
+We only need one algorithm to work with both: an algorithm able to find a monomorphism between two quandles, if one exists. \newline\newline The algorithm implemented in QuandleRUN is an adapted version of algorithm 14 of CREAM\footnote{CREAM: a Package to Compute [Auto, Endo, Iso, Mono, Epi]-morphisms, Congruences, Divisors and More for Algebras of Type $(2^n, 1^n)$ by Ara{\'u}jo, Jo{\~a}o and Pereira, Rui Barradas and Bentz, Wolfram and Chow, Choiwah and Ramires, Jo{\~a}o and Sequeira, Luis and Sousa, Carlos, 2022\newline}.
+\begin{center}
+    
+    \textcolor{darkred}{We cannot really take advantage of invariants on individual elements, especially when dealing with connected quandles, to speed the process up but the framework is there.} 
+\end{center}
+\begin{example}
+       \begin{enumerate}
+           \item $|\{ y \in Q : L_x(y) = y\}|$
+       \end{enumerate}
+\end{example}
+\end{frame}
+
+\begin{frame}{\emph{Possible improvements}}
+There \emph{could} be ways to ways to make the algorithm terminate faster when looking for an isomorphism - to make sure that an isomorphism between two quandles $A$ and $B$ does not exist - we need to use some \emph{global} invariant; for example a polynomial invariant of finite quandles such as the one presented in \textit{A polynomial invariant of finite quandles} by Sam Nelson.\newline\newline
+Other global invariants are connected to $Inn(Q)$, for example: \newline\newline
+Let us use $Nil(G)$ to indicate the nilpotency class of a group $G$:
+\[A \cong B \implies Nil(Inn(A)) = Nil(Inn(B)) \]
+\end{frame}
+
+\begin{frame}{Subquandles}
+The idea of monomorphisms can be directly connected to that of \emph{subquandles}: if there is a monomorphism between quandle $A$ and quandle $B$, $A$ is a subquandle of $B$. \newline \newline QuandleRUN includes an algorithm to compute all the subquandles of a given quandle, which uses adapted versions of algorithms 17 and 18 of CREAM\footnote{CREAM: a Package to Compute [Auto, Endo, Iso, Mono, Epi]-morphisms, Congruences, Divisors and More for Algebras of Type $(2^n, 1^n)$ by Ara{\'u}jo, Jo{\~a}o and Pereira, Rui Barradas and Bentz, Wolfram and Chow, Choiwah and Ramires, Jo{\~a}o and Sequeira, Luis and Sousa, Carlos, 2022\newline}.\newline
+QuandleRUN also allows the user to easily work with subquandle without the need to change the set of labels.
+
+\end{frame}
+\begin{frame}{How does it work?}
+    \begin{enumerate}
+        \item Consider a list of quandles to be expanded composed by all the subquandles with 1 element. 
+        \item Expand each of them by one element from each orbit of the Quandle's Automorphism group.
+        \item Apply the automorphism group on each of the expanded subquandles.
+        \item Add the resulting subquandles to the list and go back to step 2, until the only generated subquandles is the initial quandle.
+        
+    \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Thought experiments}
+
+The ``unarification" of a binary operation:
+
+\[
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}\Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}a & \Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}c & \Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}b \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}c & b & a \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}b & a & c \\
+\end{bNiceMatrix}
+\]
+\[\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & c & b 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}c & b & a 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}b & a & c 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}a & c & b
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}c & b & a
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}b & a & a
+\end{bNiceMatrix}\]
+\[\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+a & c & b 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+c & b & a 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+b & a & c 
+\end{bNiceMatrix}\]
+
+
+
+\[
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}\Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}a & \Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}b & \Block[tikz={line width = 4pt, fill = green2, draw = white}]{*-1}{}c \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & b & c \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & b & c \\
+\end{bNiceMatrix}
+\]
+\[\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & b & c 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & b & c 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & b & c 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}a & a & a
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}b & b & b
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[tikz={line width = 4pt, fill = green2, draw = white}]{1-3}{}c & c & c
+\end{bNiceMatrix}\]
+
+\[\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+a & b & c 
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+a & a & a
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+b & b & b
+\end{bNiceMatrix}
+\begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+c & c & c
+\end{bNiceMatrix}\]
+
+
+
+
+\end{frame}
+
+
+\begin{frame}{Quotient quandles and congruences}
+\small
+\begin{definition}[Congruence]
+A congruence $\alpha$ on $X$ is an equivalence relation $\sim$ on $X$ that satisfies the \emph{compatibility property}
+\[ x \sim z \land y \sim t \implies x \bullet y \sim z \bullet t  \]
+\end{definition}
+\begin{definition}
+\textit{Displacement group of $Q$.}\newline
+$Dis(Q) = \langle L_xL_y^{-1} :  x,y \in Q \rangle$\newline\newline
+\textit{Kernel relative to $\alpha$.}\newline
+$Dis^{\mathbf{\alpha}} = \{ h \in Dis(Q) : \forall x \in Q \quad h(x)~\alpha~x  \}$\newline\newline
+\textit{Displacement group relative to $\alpha$.}\newline
+$Dis_{\mathbf{\alpha}} = \langle L_xL_y^{-1} :  x~\alpha~y\rangle$
+\end{definition}
+\end{frame}
+
+\begin{frame}{Algorithm}
+    
+In 2008, Ralph Freese described in \textit{Computing congruences efficiently} an algorithm to compute in nearly linear time the principal congruence generated by a pair in a unary algebra. On this very strong base, the developers of CREAM\footnote{CREAM: a Package to Compute [Auto, Endo, Iso, Mono, Epi]-morphisms, Congruences, Divisors and More for Algebras of Type $(2^n, 1^n)$ by Ara{\'u}jo, Jo{\~a}o and Pereira, Rui Barradas and Bentz, Wolfram and Chow, Choiwah and Ramires, Jo{\~a}o and Sequeira, Luis and Sousa, Carlos, 2022\newline}, built their algorithm, an implementation of which is now included in QuandleRUN.
+
+\end{frame}
+
+\begin{frame}{How does it work?}
+    \begin{enumerate}
+        \item Unarify the quandle.
+        \item Loop over $Q\times Q$ and use Freese's algorithm to compute all the principal congruences of the quandle and add them to the list of all congruences.
+        
+        \item Take a \textbf{principal} congruence and an item in the list of \textbf{all} congruences and, if the principal congruence is not contained in the congruence it is being joined with, join them and add the result to the list of all congruences. 
+        \item Stop the process once no new congruence shows up.
+    \end{enumerate}
+\end{frame}
+\begin{frame}{Quotient quandles and congruences}
+However, from a very recent paper\footnote{Marco Bonatto. Medial and semimedial left quasigroups. \textit{Journal of Algebra and Its Applications}, 21(2), 2022. } comes a result that gives better running times in the context of connected left quasigroups and, thus, connected quandles.\newline\newline Technically, the result is not restricted to connected left quasi groups but our ability to compute the necessary components fast is. 
+\begin{lemma}[\small 1.5 - Medial and semimedial left quasigroups - Marco Bonatto]
+Let Q be a left quasigroup and $\alpha$ an equivalence relation on Q. The following are equivalent:
+\begin{itemize}
+    \item[(i)] $\alpha \in Con(Q)$.
+    \item[(ii)] the blocks of $\alpha$ are blocks with respect to the action of $Inn(Q)$ \textbf{and} $Dis_\alpha \leq Dis^\alpha$.
+\end{itemize}
+
+\end{lemma}
+
+
+\end{frame}
+
+\begin{frame}{Quotient quandles and congruences}
+    At the moment, I do not know about any algorithm to construct all non-trivial G-invariant partitions of the natural G-set X of an \textbf{intransitive} permutation group G. Once such an algorithm is available, implementing the algorithm to compute all congruences of \textbf{any} left quasigroup is trivial.\newline\newline
+    The strategy is:
+    \begin{itemize}
+        \item[1.] Construct all non-trivial G-invariant partitions of the natural G-set X of the transitive permutation group $Inn(Q)$.
+        \item[2.] Since a partition is essentially an equivalence relation, which we call $\alpha$, we now only need to verify that the generators of $Dis_\alpha$ are elements of $Dis^\alpha$; if they are, $\alpha$ is added to the list of all congruences, otherwise it is discarded.  
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Quotient quandles and congruences}
+    On an Ubuntu terminal with a 3GHz AMD CPU: \newline
+    \begin{center}
+        \begin{tabular}{c|c|c}
+         cardinality & CREAM(seconds) & QuandleRUN(seconds) \\
+         1-5 & 0.000 & 0.000 \\
+         6-12 & 0.010-0.100 & 0.000 \\
+         13-21 & 0.100-1.000 & 0.000 \\
+         22-27& 1.100 - 3.000 & 0.010-0.030 \\
+         28-32& 3.100-5.900& 0.000-0.050 \\
+         
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Let us play around with some examples.}
+    
+    \begin{center}
+        \animategraphics[loop,autoplay,width=0.7\linewidth]{10}{Seminar-May 26th/images/animated/zeno}{}{}
+    \end{center}
+    
+\end{frame}
+
+

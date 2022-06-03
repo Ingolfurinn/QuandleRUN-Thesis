@@ -31,7 +31,8 @@
 
 
 \renewcommand{\datename}{Date:}
-\newcommand{\Software}{\textsf{QuandleRUN/QuandleBundle }}
+\newcommand{\Software}{\textsf{QuandleRUN }}
+\newcommand{\magma}{\textsc{Magma }}
 \makeatletter
 \def\@cite#1#2{[\textbf{#1\if@tempswa , #2\fi}]}
 \def\@biblabel#1{[\textbf{#1}]}
@@ -65,14 +66,46 @@
   }%
 }
 
-
+\newcommand{\algebra}[1]{\ensuremath\mathbf{#1}}
+\newcommand{\TODO}[1]{
+    \begin{center}
+    \fbox{\textcolor{red}{TODO: #1}}
+    \end{center}
+}
 
 \usepackage{hyperref}
-
+\usepackage{listings}
 \usepackage{graphicx}
 \graphicspath{{images/}}
-
+\usepackage{amssymb}
 \usepackage{blindtext}
-
 \usepackage{subfiles}
+
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 \endinput

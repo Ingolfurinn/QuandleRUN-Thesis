@@ -1,0 +1,44 @@
+\documentclass{../mcom-l}
+
+\begin{document}
+
+\begin{definition}\cite{warner1990modern} 
+Let $S$ be a set. Let $\sim~\subseteq S \times S$. $\sim$ is a \emph{relation} on $S$.
+\begin{itemize}
+    \item If $\forall x \in S\quad (x,x)\in~\sim$ then $\sim$ is \emph{reflexive}.
+    \item If $\forall x,y \in S\quad (x,y)\in~\sim\implies(y,x)\in~\sim$ then $\sim$ is \emph{symmetric}.
+    \item If $\forall x,y,z \in S\quad (x,y)\in S~\land~(y,z)\in S \implies(x,z)\in S$ then $\sim$ is \emph{transitive}.
+\end{itemize}
+$(x,y) \in S$ is denoted by $x\sim y$.\newline
+An \emph{equivalence relation} is a reflexive, symmetric and transitive relation.
+\end{definition}
+\begin{definition}\cite{warner1990modern} 
+Let $S$ be a set. Let $\pi$ be a set such that 
+\[\emptyset \not\in \pi \quad \land \quad \bigcup\pi=S \quad \land\quad \forall x,y\in\pi \quad x\cap y=\emptyset \]
+then $\pi$ is a \emph{partition} of $S$.
+\end{definition}
+
+\begin{definition}\cite{warner1990modern} 
+Let $S$ be a set. Let $\pi$ be an equivalence relation on $S$. For each $x\in S$, $[x]_\sim = \{y \in S : x \sim y\}$ denotes the equivalence class of $x$ determined by $\sim$; $x$ is a representative of $[x]_\sim$. \newline The set of all equivalence classes determined by $\sim$ is denoted by $S/\sim$.
+\end{definition}
+
+\begin{theorem}
+Let $S$ be a set. Let $\pi$ be an equivalence relation on $S$.\newline
+$S/\sim$ is a partition of $S$.
+\begin{proof}
+Theorem 10.1 in \cite{warner1990modern}.
+\end{proof}
+\end{theorem}
+
+\begin{definition}\cite{burris1981course}
+Let $\mathbf{A}=(S,\cdot)$ be a groupoid and $\sim$ an equivalence relation on $S$. If
+\[\forall x,y,z,t \in S \quad x \sim z \land y \sim t \implies x \cdot y \sim z \cdot t,\]
+that is, $\sim$ has the \emph{compatibility property}, then $\sim$ is a \emph{congruence relation} on $\mathbf{A}$. The set of all congruences on an algebra $\mathbf{A}$ is denoted by $\text{Con}~\mathbf{A}$.
+\end{definition}
+
+\begin{definition}\cite{burris1981course}
+Let $\mathbf{A}=(S,\cdot)$ be a groupoid and $\sim$ a congruence relation on $\mathbf{A}$. Let $\mathbf{B} = (S/\sim, \star)$ where \[[x]_\sim \star [y]_\sim = [x \cdot y]_\sim,\quad \text{for any }[x]_\sim,[y]_\sim \in S/\sim.\]
+$\mathbf{B}$ is a \emph{quotient algebra} of $\mathbf{A}$. 
+\end{definition}
+\end{document}
+

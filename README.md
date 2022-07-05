@@ -19,8 +19,9 @@ This is a repository for my Bachelor graduation project and Honours Academy fina
  ### Running the examples
  
 1. Launch Magma. 
-2. Load the example: ``load "examples/EXAMPLE[for example: Subquandles]/FILENAME[for example: SubquandlesExample]``.
-3. Quit Magma.
-4. Run the converting script: 
+2. Enter ``AttachSpec("packages/QuandleRUN");``.
+3. Load the example: ``load "examples/EXAMPLE[for example: Subquandles]/FILENAME[for example: SubquandlesExample]``.
+4. Quit Magma.
+5. Run the converting script: 
 
    ``ls | grep .txt | xargs -n 1 readlink -f | xargs -n 1 python3 examples/EXAMPLE[for example: Subquandles]/Convert.py``.

@@ -13,7 +13,7 @@ This is a repository for my Bachelor graduation project and Honours Academy fina
 
 * QuandleRUN + Examples:
   1. Follow the guid above to install Magma. 
-  2. Install [Python 3.8.9 (It would probably also work with later releases)](https://www.python.org](https://www.python.org/downloads/release/python-389/)
+  2. Install [Python 3.8.9 (It would probably also work with later releases)](https://www.python.org/downloads/release/python-389/)
   3. Install [graphviz](graphviz.org).
   
  ### Running the examples

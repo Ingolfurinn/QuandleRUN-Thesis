@@ -2,7 +2,7 @@
 
 This is a repository for my Bachelor graduation project and Honours Academy final project. 
 
-## Installation guide for "Software"
+## Installation guide for "Software" for UNIX systems.
 
 * Only QuandleRUN:
   1. Install [Magma](magma.maths.usyd.edu.au).

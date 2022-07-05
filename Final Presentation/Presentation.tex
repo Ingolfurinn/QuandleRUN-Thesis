@@ -1,0 +1,369 @@
+\begin{frame}{QuandleRUN}
+QuandleRUN is a library of algorithms focusing on \textbf{finite} quandles that I started developing on February 2022 under the supervision of\newline\newline
+dr. Wieb Bosma - Computer Algebra - Radboud University \newline
+dr. Marco Bonatto - Non-Associative Algebra - University of Ferrara\newline\newline
+QuandleRUN aims to expand the capabilities of the only existing package working with \textbf{finite} quandles, Rig\footnote{\footnotesize{L. Vendramin. Rig, a GAP package for racks, quandles and Nichols algebras.}}. \newline\newline
+I am working with \textsc{Magma}\footnote{Wieb Bosma, John Cannon, and Catherine Playoust.  The Magma Algebra System I: The User Language. \textit{Journal of Symbolic Computation}, 24(3):235–265, 1997. }; it has an extremely rich collection of algorithms and allows the user to manipulate algebraic structures directly.
+
+\end{frame} 
+
+
+
+
+
+\begin{frame}{Quandles}
+    \begin{itemize}
+        \item David Joyce indicates quandles as a classifying invariant of knots.
+        \item Quandles arise as set-theoretical solutions to the quantum Yang-Baxter equation in statistical mechanics. 
+        \item Quandles are spindles - useful tools in studying the relation between a Lie Algebra and its Lie Group. \item Quandles can also be adapted to distinguish the topological types of proteins, thus obtaining \emph{bondles}. 
+    \end{itemize}
+    This motivates the efforts in the study of quandles and the creation of computational tools that can help in such an endeavour.
+\end{frame}
+\begin{frame}{Quandles}
+
+\small
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+ Let us define a Quandle $Q = (X, \bullet)$:
+ \begin{itemize}
+    \item A finite set $X$ and a binary operation $\bullet$
+    \item Three axioms: $\forall x, y, z \in X$\begin{itemize}
+        
+        \item[1] $x \bullet  x = x$
+        
+        \item[2]   $\exists! t \in X~y \bullet t$ $= x$ 
+        \item[3] $ 
+        x \bullet (y \bullet z) = (x \bullet y) \bullet (x \bullet z) 
+        $ 
+    \end{itemize}
+    
+\end{itemize}
+\end{column}
+\vspace{1em}
+\begin{column}{0.4\textwidth}  
+
+\tiny Matrices and Finite Quandles by Benita Ho and Sam Nelson
+\Large
+\[M_Q = \begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix}\]
+\small The Cayley Table.
+\end{column}
+\end{columns}
+QuandleRUN has several constructions:
+\begin{itemize}
+    \item Construct a quandle given a set and binary operation. 
+    \item Construct a quandle given its matrix.
+\end{itemize}
+QuandleRUN accepts any set and any quandle operation on it. \newline 
+\newline
+QuandleRUN allows the creation of quandles arising from groups: Core Quandles, n-Conjugation Quandles, \textbf{Coset Quandles}.
+\end{frame}
+
+
+
+\begin{frame}{Translations and Inner Automorphism Group}
+The input we work with is the integral/\textbf{internal} quandle matrix.
+Sometimes we might talk about left \emph{Translation} maps and inner automorphism group. 
+
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\textcolor{white}{line}\newline
+ \[M_Q = \begin{bNiceMatrix}[left-margin = 6pt, right-margin = 6pt] 
+\Block[draw=darkred, line-width = 2pt]{1-3}{}a & c & b \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}c & b & a \\
+\Block[draw=darkred, line-width = 2pt]{1-3}{}b & a & c \\
+\end{bNiceMatrix}
+\]
+\end{column}
+\begin{column}{0.33\textwidth}  
+\begin{align*}
+    L_a &\coloneqq a \mapsto a,~b \mapsto c,~c \mapsto b\\
+    L_b &\coloneqq a \mapsto c,~b \mapsto b,~c \mapsto a\\
+    L_c &\coloneqq a \mapsto b,~b \mapsto a,~c \mapsto c
+\end{align*}
+\end{column}
+\begin{column}{0.33\textwidth}  
+\begin{multline*}
+\forall x\in Q,\\ 
+L_x~\text{is bijective.}
+\end{multline*}
+
+\end{column}
+\end{columns}
+
+\begin{center}
+    \begin{definition}[\emph{Inner automorphism group}]
+\[Inn(Q) = \langle L_x : x \in Q \rangle \leq S_Q\]
+\par\noindent\rule{0.7\textwidth}{0.4pt}\newline
+A quandle is called \textbf{connected} when $Inn(Q)$ is transitive.
+\end{definition}
+\end{center}
+
+\end{frame}
+
+\section{Core algorithms}
+\frame{\sectionpage}
+
+\begin{frame}{Isomorphisms and Monomorphisms}
+\begin{multline*}
+    \text{Let}~f:\overbrace{(X,\bullet)}^A\to\overbrace{(S,\star)}^B~\text{be a function:}\\  \textsf{If}\quad f(x\bullet y) = f(x)\star f(y)\quad \textsf{then}~f~\text{is a homomorphism}
+\end{multline*}
+\emph{Isomorphism}: two quandles $A$ and $B$ are the same except for the \emph{labels} of their elements, $A \cong B$.\newline
+\emph{Monomorphism}: $A$ can be \emph{embedded} in $B$, $A \hookrightarrow B$.
+\begin{center}
+    \textcolor{darkred}{\fbox{$A \hookrightarrow B \land |A| = n \in \mathbb{N} \land |A| = |B| \implies A \cong B$}} 
+\end{center}
+\small
+\[\begin{bmatrix}
+     \textcolor{red}{a} & b & \textcolor{red}{e} & f & \textcolor{red}{c} & d \\
+     a & b & f & e & d & c \\
+     \textcolor{red}{e} & f & \textcolor{red}{c} & d & \textcolor{red}{a} & b \\
+     f & e & c & d & b & a \\
+     \textcolor{red}{c} & d & \textcolor{red}{a} & b & \textcolor{red}{e} & f \\
+     d & c & b & a & e & f \\
+\end{bmatrix} \overset{\phi}{\textcolor{red}{\hookleftarrow}}\begin{bmatrix}
+b& f & c \\
+f & c & b\\
+c & b& f
+\end{bmatrix}
+\overset{\psi}{\textcolor{purple}{\cong}} \begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix} \overset{\omega}{\textcolor{blue}{\hookrightarrow}}
+\begin{bmatrix}
+ \textcolor{blue}{a}& b& \textcolor{blue}{e}& f& \textcolor{blue}{c}& d \\
+     a& b & f& e& d& c \\
+     \textcolor{blue}{e}& f& \textcolor{blue}{c}& d& \textcolor{blue}{a}& b \\
+     f& e& c& d& b& a \\
+     \textcolor{blue}{c}& d& \textcolor{blue}{a}& b& \textcolor{blue}{e}& f \\
+     d& c& b& a& e& f 
+\end{bmatrix}\]
+\begin{columns}
+\begin{column}{0.33\linewidth}
+\begin{center}
+    $\phi: b \mapsto a,~c\mapsto c,~f\mapsto e$\newline
+\end{center}
+\end{column}
+\begin{column}{0.33\linewidth}
+\begin{center}
+     $\psi: b \mapsto a,~c\mapsto b,~f\mapsto c$\newline
+\end{center}
+\end{column}
+\begin{column}{0.33\linewidth}
+\begin{center}
+     $\omega: a \mapsto a,~b\mapsto c,~c\mapsto e$\newline
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Algorithm}
+We only need an algorithm able to find a monomorphism between two quandles, if one exists. 
+\begin{enumerate}
+    \item Compute a set generators of the Domain.
+    \item Assign images to each generator naïvely.
+    \item Expand the partial map.
+    \item If the expanded map is a homomorphism, return it else go back to step 2.
+\end{enumerate}
+
+There are ways to make the algorithm terminate faster when looking for a monomorphism: using \emph{global invariants} and \emph{``individual" invariants}.
+
+\end{frame}
+
+
+
+\begin{frame}{Automorphisms}
+
+\[M_Q=\begin{bmatrix}
+a& c & b \\
+c & b & a\\
+b & a& c
+\end{bmatrix} \hspace{3em}\sigma = \begin{bmatrix}
+c, a, b
+\end{bmatrix}\]\vspace{1em}
+\[\begin{bmatrix}
+0& 1 & 0 \\
+0 & 0 & 1\\
+1 & 0& 0
+\end{bmatrix} \overbrace{\begin{bmatrix}
+c& b & a \\
+b & a & c\\
+a & c& b
+\end{bmatrix}}^{\sigma(m_{ij})} \begin{bmatrix}
+0& 0 & 1 \\
+1 & 0 & 0\\
+0 & 1& 0
+\end{bmatrix} =\begin{bmatrix}
+b & a & c \\
+a & c & b\\
+c & b & a
+\end{bmatrix}  \begin{bmatrix}
+0& 0 & 1 \\
+1 & 0 & 0\\
+0 & 1& 0
+\end{bmatrix}=\begin{bmatrix}
+a& b & c \\
+b & c & a\\
+c & a& b
+\end{bmatrix}\]\vspace{1em}
+\begin{center}
+    \emph{Why permutations?}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Automorphisms - Algorithm}
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+Naïve:
+\begin{itemize}
+     \item Enumerate \textbf{all} permutations of $X$.
+     \item Filter the permutation. 
+ \end{itemize}
+\end{column}
+\begin{column}{0.4\textwidth}
+\begin{example}
+        Suppose $\mid X \mid = 10$. 
+        \[10! = 3.628.800\]
+\end{example}
+\end{column}
+\end{columns}
+ 
+
+\begin{center}
+     Is there a way to reduce the number of permutations to be processed \newline \emph{\textbf{on average} and} make the algorithm faster?\newline\newline
+     \textcolor{darkred}{\fbox{We do not need \textbf{all} permutations, only those in $N_{S_X}(Inn(Q))$.}} 
+\end{center}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{center}
+    In theory, no - Computing the normalizer is still a task that takes exponential time in some cases. 
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+    In practice, yes, by a lot.
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Automorphisms - Time}
+On the \emph{lilo login server}: \newline
+    \begin{center}
+        \begin{tabular}{c|c|c}
+         order & Naïve(seconds) & Smart(seconds) \\
+         1-5 & 0.000 & 0.000 \\
+         6 & 0.020 & 0.000 \\
+         7 & 0.100 & 0.000 \\
+         8 & 1.100 & 0.000 \\
+         9 & 12.000 & 0.000 \\
+         10 & 142.000 & 0.000 \\
+    \end{tabular}
+    \end{center}
+    And this is still using matrix multiplication as filtering method. \newline
+    We have a faster filtering method. 
+\end{frame}
+
+\begin{frame}{Subquandles}
+The idea of monomorphisms can be directly connected to that of \emph{subquandles}: if there is a monomorphism between quandle $A$ and quandle $B$, $A$ is a subquandle of $B$. \newline \newline QuandleRUN includes an algorithm to compute all the subquandles of a given quandle by combining the approaches of both \textsc{Rig} and \textsc{CREAM} and is faster than both of them$^\star$.\newline
+\begin{enumerate}
+    \item Get all the singletons.
+    \item Expand the subquandle by adding an element.
+    \item If the subquandle is not equal to the superquandle and it has never been seen before, add it to the list and go back to step 2. 
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Subquandles - Time}
+On the \emph{lilo login server}: \newline
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+         Order & \textsf{QuandleRUN}(s) & \textsc{Rig}(s) & \textsc{CREAM}(s) \\ \hline
+         1-10 & 0.000 & 0.000 & 0.001 \\ \hline
+         11-20 & 0.001 & 0.006 & 0.005 \\ \hline
+         21-30 & 0.005 & 0.042 & 0.016 \\ \hline
+         31-40 & 0.165 & 0.149 &   \\ \hline
+         41-47 & 0.250& 0.316&    \\ \hline
+    \end{tabular}
+    
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Quotient quandles and congruences}
+\small
+\begin{definition}[Congruence]
+A congruence on $Q$ is an equivalence relation $\alpha$ on $X$ that satisfies the \emph{compatibility property}
+\[ x ~\alpha~ z \land y~\alpha~t \implies x \bullet y ~\alpha~ z \bullet t  \]
+\end{definition}
+\begin{definition}
+\textit{Displacement group of $Q$.}\newline
+$Dis(Q) = \langle L_xL_y^{-1} :  x,y \in Q \rangle$\newline\newline
+\textit{Kernel relative to $\alpha$.}\newline
+$Dis^{\mathbf{\alpha}} = \{ h \in Dis(Q) : \forall x \in Q \quad h(x)~\alpha~x  \}$\newline\newline
+\textit{Displacement group relative to $\alpha$.}\newline
+$Dis_{\mathbf{\alpha}} = \langle L_xL_y^{-1} :  x~\alpha~y\rangle$
+\end{definition}
+\end{frame}
+
+
+
+\begin{frame}{Algorithm}
+    
+Ralph Freese described an algorithm to compute in nearly linear time the principal congruence generated by a pair in an unary algebra, in \textit{Computing congruences efficiently}. On this very strong base the developers of CREAM\footnote{CREAM: a Package to Compute [Auto, Endo, Iso, Mono, Epi]-morphisms, Congruences, Divisors and More for Algebras of Type $(2^n, 1^n)$ by Ara{\'u}jo, Jo{\~a}o and Pereira, Rui Barradas and Bentz, Wolfram and Chow, Choiwah and Ramires, Jo{\~a}o and Sequeira, Luis and Sousa, Carlos, 2022\newline} built their algorithm, an implementation of which is now included in QuandleRUN.
+
+\end{frame}
+
+
+\begin{frame}{Quotient quandles and congruences}
+However, from a very recent paper\footnote{Marco Bonatto. Medial and semimedial left quasigroups. \emph{Journal of Algebra and its applications 21.02 (2022): 2250021.}} comes a result that gives better running times in the context of connected left quasigroups and, thus, connected quandles.\newline\newline Technically, the result is not restricted to connected left quasigroups but our ability to compute the necessary components fast is. 
+\begin{lemma}[\small 1.5 - Medial and semimedial left quasigroups - Marco Bonatto]
+Let Q be a left quasigroup and $\alpha$ an equivalence relation on Q. The following are equivalent:
+\begin{itemize}
+    \item[(i)] $\alpha \in Con(Q)$.
+    \item[(ii)] the blocks of $\alpha$ are blocks with respect to the action of $Inn(Q)$ \textbf{and} $Dis_\alpha \leq Dis^\alpha$.
+\end{itemize}
+
+\end{lemma}
+
+
+\end{frame}
+
+\begin{frame}{Congruences - Time}
+On the \emph{lilo login server}: \newline
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+         Order & \textsf{QuandleRUN}(s) & \textsc{CREAM}(s) \\ \hline
+          1-10 & 0.000 & 0.000 \\ \hline
+         11-20 & 0.000 & 0.000 \\ \hline
+         21-30 & 0.000 & 0.002\\ \hline
+         31-40 & 0.000 & 0.007\\ \hline
+         41-47 & 0.000 & 0.013 \\ \hline
+    \end{tabular}
+\end{center}
+\end{frame}
+\begin{frame}{Quotient quandles and congruences}
+    The strategy is:
+    \begin{itemize}
+        \item[1.] Construct all non-trivial partitions preserved by $Inn(Q)$.
+        \item[2.] Since a partition is essentially an equivalence relation, which we call $\alpha$, we now only need to verify that the generators$^\star$ of $Dis_\alpha$ are elements of $Dis^\alpha$; if they are, $\alpha$ is added to the list of all congruences, otherwise it is discarded.  
+    \end{itemize}
+    At the moment, an implementation of an algorithm to construct all non-trivial partitions preserved by the action of any permutation group G is not available, but it seems to be possible$^\star$. Once such an algorithm is implemented, implementing the algorithm to compute all congruences of \textbf{any} left quasigroup is trivial.\newline\newline
+\end{frame}
+
+
+

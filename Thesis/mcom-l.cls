@@ -31,8 +31,10 @@
 
 
 \renewcommand{\datename}{Date:}
-\newcommand{\Software}{\textsf{QuandleRUN }}
-\newcommand{\magma}{\textsc{Magma }}
+\newcommand{\Software}{\textsf{QuandleRUN}}
+\newcommand{\magma}{\textsc{Magma}}
+\newcommand{\rig}{\textsc{Rig}}
+\newcommand{\cream}{\textsc{CREAM}}
 \makeatletter
 \def\@cite#1#2{[\textbf{#1\if@tempswa , #2\fi}]}
 \def\@biblabel#1{[\textbf{#1}]}
@@ -41,6 +43,8 @@
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -52,6 +56,12 @@
 
 \numberwithin{equation}{section}
 
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Dis}{Dis}
+\DeclareMathOperator{\LMlt}{LMlt}
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\Con}{Con}
+\DeclareMathOperator{\Nil}{Nil}
 %    Absolute value notation
 \newcommand{\abs}[1]{\lvert#1\rvert}
 
@@ -65,7 +75,7 @@
     \fbox{\raisebox{0pt}[#2]{\hspace{#1}}}%
   }%
 }
-
+\newcommand{\alg}[3]{\ensuremath\mathbf{#1}=(#2,#3)}
 \newcommand{\algebra}[1]{\ensuremath\mathbf{#1}}
 \newcommand{\TODO}[1]{
     \begin{center}
@@ -73,21 +83,35 @@
     \end{center}
 }
 
-\usepackage{hyperref}
+\newcommand{\WARNING}[1]{
+    \begin{center}
+    \fbox{\textcolor{red}{WARNING: #1}}
+    \end{center}
+}
+
+
+
+\usepackage{pifont}
+\usepackage[hidelinks]{hyperref}
 \usepackage{listings}
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{amssymb}
 \usepackage{blindtext}
 \usepackage{subfiles}
-
+% \usepackage{algpseudocode}
+% \usepackage{algorithm}
+\usepackage[boxruled]{algorithm2e}
 \usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
+\definecolor{gold}{rgb}{1,0.75,0}
+\definecolor{olivedrab1}{rgb}{0.75,1,0.24}
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
     commentstyle=\color{codegreen},
@@ -108,4 +132,7 @@
 }
 
 \lstset{style=mystyle}
+
+
+
 \endinput

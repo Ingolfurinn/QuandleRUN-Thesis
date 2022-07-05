@@ -1,0 +1,89 @@
+ 
+
+Quandles := ConnectedQuandlesDB();
+QuandlesMatrices := [ Quandles[i] : i in [1 .. 15]];
+Quandles := [ [ QuandleFM(Quandles[block, i], {@ x : x in [1..block]@}) : i in [ 1..#Quandles[block] ] ] : block in [1 .. 12] ];
+
+
+
+
+QuotientsDB := function(Quandle, DB)
+    CongruenceSet := Congruences(Quandle);
+    
+    isomorphic := [];
+    for congruence in CongruenceSet do 
+        if #congruence[1] in [1, #Quandle`Set] then 
+            continue;
+        end if;
+
+        Q1 := QuotientQuandle(Quandle, congruence);
+        
+
+        if IsTransitive(Inn(Q1)) then 
+            for index := 1 to #DB[#Q1`Set] do
+                Q2 := DB[#Q1`Set, index];
+                
+
+                mono := Monomorphism(Q1, Q2);
+
+                if not (mono eq []) then 
+                    Include(~isomorphic, Q2);
+                    break;
+                end if; 
+
+            end for;
+           
+        end if;
+    end for; 
+    return  isomorphic;
+
+end function;
+
+
+Fgraph := [];
+matrices := [];
+IDs := [];
+for index1 := 1 to #Quandles do
+    for index2 := 1 to #Quandles[index1] do
+        Q := QuandlesMatrices[index1, index2];
+        Append(~Fgraph, <Q, <index1, index2>>);
+        Append(~matrices, Q);
+        Append(~IDs, <index1, index2>);
+    end for;
+end for;
+
+
+matrixToId := map< matrices -> IDs| Fgraph>;
+
+VSet := &join {@ {@ <block,index> : index in [1 .. #Quandles[block]]@} : block in [1 .. #Quandles]@};
+graph := Digraph< VSet | [] >;
+
+IdToCount := map< VSet -> [1 .. #VSet] | x :-> Index(VSet, x)>;
+
+for index := 1 to #VSet do
+    QuandleID := VSet[index];
+    
+    QuoQuandles := QuotientsDB(Quandles[QuandleID[1], QuandleID[2]], Quandles);
+
+    for QuoQuandle in QuoQuandles do
+
+        graph +:= { [QuandleID, matrixToId(internal_QuandleMatrix(QuoQuandle))] };
+        
+    end for;
+
+end for;
+
+edges_p := {@ x : x in Edges(graph) | TerminalVertex(x) ne Vertices(graph)[1]  @};
+b := Graph<Vertices(graph) | edges_p>;
+
+OKConnectedComponents := {@ x : x in Components(b) | #x gt 1 and #x lt 12 @};
+
+count := 1;
+for x in OKConnectedComponents do                                                             
+    PrintFile("ConnectedQuoQuandle" cat IntegerToString(count) cat ".txt", sub<b | x> : Overwrite := true);
+    count := count + 1;
+end for;
+
+biggerQuoGraph := sub< b | { VertexSet(b) . x : x in [1 .. #(&cat [ [ 1 : q in  Quandles[y]] : y in [1 .. 12]]) ] } >;
+
+PrintFile("BigConnectedQuoQuandle.txt", biggerQuoGraph : Overwrite := true);

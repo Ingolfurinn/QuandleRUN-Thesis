@@ -1,0 +1,52 @@
+
+
+Quandles := ConnectedQuandlesDB();
+Quandles := [ [ QuandleFM(Quandles[block, i], {@ x : x in [1..block]@}) : i in [ 1..#Quandles[block] ] ] : block in [1 .. 47] ];
+Quandle := Quandles[36,10];
+
+
+CongruenceSet := Congruences(Quandle);
+Sort(~CongruenceSet, func< x, y | #y - #x> );
+graph := Digraph< {@ <x, isAbelianCongruence(Quandle, CongruenceSet[x]), isCentralCongruence(Quandle, CongruenceSet[x])> : x in [1..#CongruenceSet] @} | [] >;
+Contained := [];
+Fgraph := [];
+for index1 := 1 to #CongruenceSet do
+    Append(~Fgraph, <CongruenceSet[index1], index1>);
+    contained := {};
+    for congruence in CongruenceSet do
+        if #congruence ge #CongruenceSet[index1] then 
+            continue;
+        end if;
+        for blockA in CongruenceSet[index1] do
+            round := false;
+            for blockB in congruence do
+                if blockA subset blockB then 
+                    round := true;
+                    break;
+                end if;
+            end for;
+            if not round then 
+                continue congruence;
+            end if;
+        end for;
+
+        Include(~contained, congruence);
+    end for;
+    Contained[index1] := contained;
+
+end for;
+
+
+CongruenceToIndex := map< CongruenceSet -> [1..#CongruenceSet] | Fgraph >;
+
+for index1 := 1 to #CongruenceSet do
+    for congruence in Contained[index1] do
+        Contained[index1] diff:= Contained[CongruenceToIndex(congruence)];
+    end for;
+    
+    for congruence in Contained[index1] do
+        graph +:= { [CongruenceToIndex(CongruenceSet[index1]), CongruenceToIndex(congruence)] };
+    end for;
+end for;
+
+PrintFile("ColouredLatticeGraph.txt", graph : Overwrite := true);

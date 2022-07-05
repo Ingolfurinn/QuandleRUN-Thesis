@@ -1,0 +1,131 @@
+ 
+
+Quandles := ConnectedQuandlesDB();
+QuandlesMatrices := [ Quandles[i] : i in [1 .. 12]];
+Quandles := [ [ QuandleFM(Quandles[block, i], {@ x : x in [1..block]@}) : i in [ 1..#Quandles[block] ] ] : block in [1 .. 12] ];
+function SubquandleGraphComponent(Subquandles, Quandle, matrixToId, IdToCount, graph) 
+
+    if (#Quandle`Set eq 1) then 
+        return graph;
+    else 
+        matrixA := QuandleMatrix(Quandle);
+        count := IdToCount(matrixToId(matrixA));
+        SubquandlesinDB := Subquandles[count];
+        Sort(~SubquandlesinDB, func< x, y | #(y`Set) - #(x`Set)> );
+        
+        
+        
+        while not IsEmpty(SubquandlesinDB) do
+            value := SubquandlesinDB[1];
+            
+            matrixB := QuandleMatrix(value);
+            
+            if ( value eq Quandle ) or (#(value`Set) eq 1) then 
+                Exclude(~SubquandlesinDB, value);
+                continue;
+            end if;
+
+            
+            graph +:= { [matrixToId(matrixB), matrixToId(matrixA)] };
+            
+            graph := SubquandleGraphComponent(Subquandles, value, matrixToId, IdToCount, graph);
+            
+            Remove(~SubquandlesinDB, 1);
+            for element in Subquandles[IdToCount(matrixToId(matrixB))] do 
+                Exclude(~SubquandlesinDB, element);
+            end for;
+            
+        end while;
+
+        return graph;
+    end if;
+end function;
+
+
+
+SubquandlesDB := function(F, DB) 
+
+    if IsPrime(#F`Set) then 
+        return [ F, QuandleFM([[1]], {@ 1 @}) ];
+    end if;
+    
+
+    SubAs := { x : x in Subquandles(F) | (1 in x) and (#x gt 2) };
+    
+    
+    isomorphic := [ ];
+
+    
+    
+    for x in SubAs do 
+        uSet := {@ y : y in Sort(Setseq(x)) @};
+        matrix := [ [ 0 : y in uSet] : z in uSet ];
+
+        for y,z in x do 
+            matrix[Index(uSet, y), Index(uSet, z)] := QuandleMatrix(F)[y,z];
+        end for;
+
+        Q1 := QuandleFM(matrix, uSet);
+        
+        
+        if IsTransitive(Inn(Q1)) then 
+            for index := 1 to #DB[#x] do
+                Q2 := DB[#x, index];
+                
+
+                mono := Monomorphism(Q1, Q2);
+
+                if not (mono eq []) then 
+                    Include(~isomorphic, Q2);
+                    break;
+                end if; 
+
+            end for;
+        end if;
+    end for; 
+
+    
+    return  isomorphic;
+end function;
+
+Fgraph := [];
+matrices := [];
+IDs := [];
+for index1 := 1 to #Quandles do
+    for index2 := 1 to #Quandles[index1] do
+        Q := QuandlesMatrices[index1, index2];
+        Append(~Fgraph, <Q, <index1, index2>>);
+        Append(~matrices, Q);
+        Append(~IDs, <index1, index2>);
+    end for;
+end for;
+
+
+matrixToId := map< matrices -> IDs| Fgraph>;
+
+VSet := &join {@ {@ <block,index> : index in [1 .. #Quandles[block]]@} : block in [1 .. #Quandles]@};
+graph := Digraph< VSet | [] >;
+
+IdToCount := map< VSet -> [1 .. #VSet] | x :-> Index(VSet, x)>;
+
+
+
+SubquandlesinDB := [ SubquandlesDB(Quandles[VSet[x][1], VSet[x][2]], Quandles) : x in Codomain(IdToCount) ];
+
+for index := #VSet to 1 by -1 do
+    Quandle := VSet[index];
+    graph := SubquandleGraphComponent(SubquandlesinDB, Quandles[Quandle[1], Quandle[2]], matrixToId, IdToCount, graph);
+end for;
+
+
+
+edges_p := {@ x : x in Edges(graph) | TerminalVertex(x) ne Vertices(graph)[1]  @};
+b := Graph<Vertices(graph) | edges_p>;
+
+OKConnectedComponents := {@ x : x in Components(b) | #x gt 1 @};
+
+count := 1;
+for x in OKConnectedComponents do                                                             
+    PrintFile("SubQuandle" cat IntegerToString(count) cat ".txt", sub<b | x> : Overwrite := true);
+    count := count + 1;
+end for;

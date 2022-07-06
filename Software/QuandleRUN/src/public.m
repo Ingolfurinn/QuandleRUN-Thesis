@@ -254,17 +254,15 @@ end intrinsic;
 
 intrinsic Dis(Q :: Qndl) -> GrpPerm
 { Finds the displacement group of the quandle Q }
-	return internal_Dis(internal_QuandleMatrix(Q));
+    return internal_Dis(internal_QuandleMatrix(Q));
 end intrinsic;
 
 intrinsic Dis_a(Q :: Qndl, alpha :: SetIndx[SetEnum[RngIntElt]]) -> GrpPerm
 { Finds the displacement group of the quandle Q relative to congruence alpha represented by its induced partion of the underlying set of the quandle }
-	return internal_Dis_a(internal_QuandleMatrix(Q), alpha);
+    return internal_Dis_a(internal_QuandleMatrix(Q), alpha);
 end intrinsic;
 
 intrinsic Kernel_a(Q :: Qndl, alpha :: SetIndx[SetEnum[RngIntElt]]) -> SetEnum
 { Returns the kernel relative to the congruence alpha represented by its induced partion of the underlying set of the quandle Q }
-	
-	return internal_Kernel_a(internal_Kernel_a(Q), alpha);
-	
+    return internal_Kernel_a(internal_Kernel_a(Q), alpha);	
 end intrinsic;

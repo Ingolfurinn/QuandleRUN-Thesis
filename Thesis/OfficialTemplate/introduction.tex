@@ -1,0 +1,31 @@
+\chapter{Introduction}\label{introduction}
+\noindent
+Quandles are relatively modern algebraic structures. They were independently described by David Joyce in \cite{JOYCE198237} and Sergei V. Matveev in \cite{SergeiMatveevDisGrou}. In the field of knot theory, the quandle axioms are equivalent to the three Reidemeister moves, in the context of Tietze transformations \cite{lie2algebras, nelson2005signed}.  In \cite{JOYCE198237}, David Joyce indicates quandles as a classifying invariant of knots which means that they play a role in what still is one of the fundamental problems of knot theory, the classification of knots -- a computationally hard problem\label{intro1Connected}. Virtual knot theory, introduced by Louis H. Kauffman in \cite{kauffman2012introduction} generalises classical knot theory to the point that many structures in classical knot theory generalize to the virtual domain; in fact, one can extend quandles to virtual quandles that yield generalizations of several invariants of traditional knots \cite{kauffman2005virtual}. 
+
+In the quest to solve the knot classification problem, knot invariants related to statistical mechanics arose \cite{jones1989knot, kauffman1988statistical, turaev1990yang}. A central theme of statistical mechanics is the Yang-Baxter equation \cite{wu1993yang}, of which quandles arise as set-theoretical solutions \cite{ETINGOF2001709}. 
+Quandles also arise in connection to Hopf algebras and Nichols algebras \cite{andruskiewitsch2003racks} and as a useful tool in studying the relation between a Lie Algebra and its Lie Group \cite{lie2algebras}. Quandles can also be adapted to distinguish the topological types of proteins, thus obtaining \emph{bondles} \cite{adams2020knot}.
+
+This motivates the efforts in the study of quandles and the creation of computational tools that can help in such an endeavour. At the time of writing, \rig~\cite{RiGapVendramin}, a package for the computer algebra system \textsc{GAP} \cite{GAPLinton}, seems to be the only tool explicitly dedicated to the study quandles. \newline 
+
+Computer algebra involves developing algorithms to carry out \emph{exact} computations involving algebraic structures, such as groups, graphs and algebraic curves which play an important role in modern mathematics. Contrary to results of numerical methods, which concern themselves with approximate solutions, computer algebraic procedures can help in solving decision problems such as \textit{Is a defined quandle Q connected?} or, \textit{Is quandle Q' a subalgebra of quandle Q?}. \newline
+
+This work is interested in developing solid foundations on which future computational work on quandles can be built and does so by combining results from the mathematical theory of quandles and adapting existing computer algebraic methods. 
+\Software, a module for the computer algebra system \magma~\cite{BOSMA1997235}, aims to improve \rig~and to become a real research instrument. \Software~draws inspiration from \rig~itself and from \cream~\cite{Araujo2022CREAMAP}, a very recent and versatile package for the computer algebra system \textsc{GAP}, that works with any unary and/or binary algebra.\newline \Software~ builds on some of their techniques and it introduces new algorithms based on the most recent developments in the theory of quandles. In this way is able to achieve a competitive speed in the most important tasks. \Software~outperforms \rig~in every task and \cream~in most tasks, which means that it has the potential to be the go-to tool of future quandle theorists. All of \Software's algorithms directly work, or can be easily adapted to work, on left quasigroups. \newline
+
+This is a self-contained introduction to \Software. In Section 2, there is a short presentation of the underlying mathematics. The concepts of left quasigroup, subalgebras, quotient structures, and homomorphisms will accompany the reader throughout the entire document, the interested reader can find out more in \cite{burris1981course, elhamdadi2015quandles, phdStanov}. Section 3 describes the computer representation of quandles and the algorithms to compute informative groups, subalgebras, congruences and quotient algebras. Section 4 shows some practical capabilities of \Software. Section 5 presents a brief comparison in terms of running times of \Software, \rig~and \cream. 
+
+
+
+% \begin{itemize}
+% \item describe the problem / research question
+% \item motivate why this problem must be solved
+% \item demonstrate that a (new) solution is needed
+% \item explain the intuition behind your solution
+% \item motivate why / how your solution solves the problem (this is technical)
+% \item explain how it compares with related work
+% \end{itemize}
+
+% Close the introduction with a paragraph in which the content of the next chapters
+% is briefly mentioned (one sentence per chapter). 
+
+% Starting a new paragraph is done by inserting an empty line like this.

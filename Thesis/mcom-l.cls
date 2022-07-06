@@ -97,10 +97,6 @@
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{amssymb}
-\usepackage{blindtext}
-\usepackage{subfiles}
-% \usepackage{algpseudocode}
-% \usepackage{algorithm}
 \usepackage[boxruled]{algorithm2e}
 \usepackage{xcolor}
 \usepackage{float}

@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{report}
+\newcommand{\Software}{\textsf{QuandleRUN}}
+\newcommand{\magma}{\textsc{Magma}}
+\newcommand{\rig}{\textsc{Rig}}
+\newcommand{\cream}{\textsc{CREAM}}
+\newcommand{\algebra}[1]{\ensuremath\mathbf{#1}}
+
+
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{rutitlepage}
+\usepackage{pifont}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage[boxruled]{algorithm2e}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{lipsum}
+\usepackage{chngcntr}
+\counterwithout{figure}{section}
+\counterwithout{figure}{subsection}
+\counterwithout{table}{section}
+\counterwithout{table}{subsection}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+% \numberwithin{figure}{paragraph}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{gold}{rgb}{1,0.75,0}
+\definecolor{olivedrab1}{rgb}{0.75,1,0.24}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Dis}{Dis}
+\DeclareMathOperator{\LMlt}{LMlt}
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\Con}{Con}
+\DeclareMathOperator{\Nil}{Nil}
+\DeclareMathOperator{\Sg}{Sg}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\makeatletter %otherwise geometry resets everything
+\Gm@restore@org
+\makeatother
+
+\setlength{\itemsep}{0cm}
+\setlength{\voffset}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\topmargin}{0cm}
+\setlength{\extrarowheight}{3pt} %for superscripts in tabular
+\setlength{\arraycolsep}{4pt}
+% \lstset{basicstyle = \footnotesize, breaklines = true}
+\newgeometry{bottom=3cm}
+
+\begin{document}
+
+
+\maketitleru[
+  layout=traditional,
+	authors={Niccolò Carrivale\\s1035576},
+	date={\today},
+	others={%
+		{First supervisor/assessor:}{Dr. Wieb Bosma},
+		{Second assessor:}{Dr. Michael Müger}},
+	course={Bachelor's Thesis Computing Science},
+	title={QuandleRUN},
+	subtitle={Computational quandle theory in Magma},
+]
+
+
+\input{abstract}
+
+\tableofcontents
+
+\input{introduction}
+\input{preliminaries}
+\input{research}
+% \input{relatedwork}
+\input{conclusions}
+
+% \bibliographystyle{plain}
+\bibliographystyle{acm}
+\bibliography{bibliography}
+
+% \appendix
+% \input{appendix}
+
+\end{document}

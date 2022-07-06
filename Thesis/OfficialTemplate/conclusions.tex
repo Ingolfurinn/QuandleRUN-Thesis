@@ -1,0 +1,17 @@
+\chapter{Conclusions}\label{conclusions}
+\noindent This document aimed to introduce \Software, a modern tool for research in the theory of quandles. It shows how, by incorporating existing ideas, developing new ones based on recently discovered theory, or by looking at the theory from a different perspective, one can provide the foundations for an open and easily extendable research tool. Furthermore, being fully written in \magma, it ensures that researchers have at their disposal the best instruments to improve upon it.
+
+Just like \magma, \Software~uses the language of sets and maps and, thus provides a natural way to any mathematician of describing computations both to improve their own tool or to explore new ideas in quandle theory. Furthermore, \Software~provides a common language for quandle theorists and a common interface to a library of algorithms; all things bound to improve communication and favour computational experimentation. This document hopes to stimulate a more experimental way of researching and hopes that \Software~can be a tool that, quoting \cite{borwein2004experimentation}:
+\begin{quote}
+    \emph{``[...] provides a compelling way to generate understanding and insight; to generate and confirm or confront conjectures; and generally to make mathematics[Author's note: read \textit{Quandle theory} here] more tangible, lively, and fun for both the professional researcher and the novice."}
+\end{quote}
+The source code of \Software~along with the examples of \hyperref[AppSection]{Section 4} can be found on \underline{\href{https://github.com/Ingolfurinn/QuandleRUN-Thesis}{GitHub}}.
+\section{Future Direction \& Open Problems}
+\begin{itemize}
+    \item Adapt \cite{atkinson} or \cite{schonert1994finding} to work on non-transitive groups. This would make Algorithm \ref{congsSmart1} work on any left quasigroup.
+    \item Attempt to define the theoretical complexity of Algorithms \ref{congsSmart1} and \ref{congsSmart2} and compare it with Algorithm \ref{congsFreese}.
+    \item In order to make algorithms such as Algorithm \ref{quandlerunSubs} faster, hashing functions with better collision rates for sets of integers are needed. 
+    \item Ways to reduce the search space for automorphisms of a left quasigroup are needed, this would make Algorithm \ref{qrunauto} even faster.
+    \item Implement \texttt{LeftTransversal($G$, $H$)} mentioned in Algorithm \ref{alg:coset}, to make the construction of coset quandles faster. 
+\end{itemize}
+

@@ -1,0 +1,183 @@
+\chapter{Preliminaries}\label{preliminaries}
+
+\label{introlqg}
+\noindent For any non-empty set $S$, one can define particular functions known as \emph{operations}. A function $f : S \to S$ is known as a \emph{unary} while a \emph{binary} operation on $S$ is a function $f : S\times S \to S$.\newline
+\noindent This work will only discuss \emph{finite} binary algebras, that is finite sets endowed with binary operations. This is convenient  because binary operations on finite sets can be represented by their \emph{Cayley table}.\newline Define $S= \{x_1, x_2, \dots, x_n\}$ and $\cdot$ a binary operation on $S$. \newline Let $(S, \cdot)$ denote the set $S$ endowed with the binary operation $\cdot$. \newline The following is the Cayley table of $(S, \cdot)$:\newline 
+    
+    \begin{center}
+        \begin{tabular}{c|c c c c}
+             $\cdot$ & $x_1$ & $x_2$ & $\hdots$ & $x_n$ \\
+             \hline
+               $x_1$ & $x_1\cdot x_1$ & $x_1\cdot x_2$ & $\cdots$ & $x_1\cdot x_n$ \\
+               $x_2$ & $x_2\cdot x_1$ & $x_2\cdot x_2$ & $\cdots$ & $x_2\cdot x_n$ \\
+               $\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+               $x_n$ & $x_n\cdot x_1$ & $x_n\cdot x_2$ & $\cdots$ & $x_n\cdot x_n$ \\
+             
+        \end{tabular}
+    \end{center}
+
+
+
+\begin{definition}\textcolor{white}{line}
+
+\begin{enumerate}\label{lqgdef}
+    \item[a.] Let $S$ be a non-empty set endowed with two binary operations $\cdot$ and $\backslash$ such that \[\forall x,y \in S\quad x \cdot (x \backslash y ) = y = x \backslash (x \cdot y)\]then $(S, \cdot, \backslash)$ is called a \emph{left quasigroup}.  
+\item[b.] Let $( S, \cdot, \backslash )$ be a left quasigroup. 
+If 
+\[\forall x,y,z \in S \quad x \cdot (y \cdot z) = (x \cdot y) \cdot (x \cdot z) \hspace{2em}\text{(left distributivity of $\cdot$),}\]
+then $( S, \cdot, \backslash )$ is called a \emph{rack}.
+\item[c.] Let $( S, \cdot, \backslash )$ be a rack.
+If 
+\[\forall x \in S \quad x \cdot x = x \hspace{2em}\text{(idempotency of $\cdot$),}\]
+then $( S, \cdot, \backslash )$ is called a \emph{quandle}.
+\end{enumerate}
+\end{definition}
+\noindent It is appropriate to describe the idea of  \emph{(left-)}translation map $L_x$, defined as $L_x(y) = x \cdot y$ for any elements $x,y$ of a left quasigroup $\algebra{A} = (S, \cdot, \backslash)$. Left translation maps are of primary importance in the theory to be discussed. They are bijections. Definition \ref{lqgdef}a suggests $y=x\backslash z$ as \emph{a} solution, whenever $x,z\in S$ are given. Definition \ref{lqgdef}a also excludes the existence of any other solution $t$: $t = x \backslash (x \cdot t) = x \backslash z = y$.
+\noindent This gives insight into how division ($\backslash$) is defined for a left quasigroup $(S, \cdot, \backslash)$: 
+\[x\backslash y=L_x^{-1}(y)\quad\text{for all}~x,y \in S\]
+\noindent Left translation maps are the generators of the \emph{Left multiplication group} \newline \label{leftmultiplicationgroup}$\LMlt(\algebra{A}) = \langle L_x : x \in \algebra{A} \rangle$.  It will play a fundamental role throughout this work because it is involved in several computations \emph{and} allows to distinguish \emph{connected} left quasigroups: a left quasigroup $\algebra{A}$ is called \emph{connected} if the action of its Left multiplication group is transitive.
+The class of quandles involved with classifying invariants of knots mentioned in \hyperref[intro1Connected]{Section 1} is that of connected quandles;  connectedness is also an algebraically relevant property according to the characterization of Mal’cev varieties of left quasigroups \cite{bonatto2021malcev}.
+% \begin{definition}[Left multiplication group]\label{inndef} \cite{JOYCE198237}\textcolor{white}{line}\newline
+% Let $\algebra{A} = (S, \cdot, \backslash)$ be a left quasigroup.
+% \[\LMlt(\algebra{A}) = \langle L_x : x \in \algebra{A} \rangle \]
+% A left quasigroup $\algebra{A}$ is called \emph{connected} if the action of its Left multiplication group is transitive \cite{bonatto2021malcev}.
+% \end{definition}
+
+% \begin{theorem}[Left-Translations are bijective]\textcolor{white}{line}\newline
+% \label{leftbijection}Let $(S, \cdot, \backslash)$ be a left quasigroup.
+% \[\forall x,z \in S \quad \exists! y \in S \quad L_x(y) = x \cdot y = z\]
+% \begin{proof}\textcolor{white}{line}\newline
+%     Let $x,z\in S$ be given. \newline 
+%     Definition \ref{lqgdef}a suggests $y=x\backslash z$ be \emph{a} solution.\newline
+%     Let $t\ne y$ be another solution such that $x \cdot t = z$.\newline
+%     Definition \ref{lqgdef}a suggests
+%     \[t = x \backslash (x \cdot t) = x \backslash z = y,\]
+% hence $y$ is a unique solution.     
+    
+% \end{proof}
+% \end{theorem}
+
+
+
+\noindent The definition of left division given above makes it possible to cut down the symbols used, thus any left quasigroup $(S, \cdot, \backslash)$ can be denoted by the pair $(S, \cdot)$ \cite{bonatto2021malcev, bonatto2022medial}. \newline This has no effect on the structure of \emph{finite} left quasigroups. \newline
+
+\begin{example} \cite{bianco2021connected, JOYCE198237,lopes2006finite}\label{quandleConst}\textcolor{white}{line}\newline
+\textbf{Dihedral quandle} of order $n$. The set $\{1,2,\dots,n\}$ associated with the operation  $x \cdot y = 2x-y \bmod n$ form a quandle of order $n$ denoted by $\algebra{R_n}$. \newline
+The Cayley table of $\mathbf{R_3} = (\{1,2,3\}, \cdot)$ is
+\begin{center}
+    \begin{tabular}{c|c c c c}
+         $\cdot$ & 1 & 2 & 3 \\
+         \hline
+          1 & 1 & 3 & 2\\
+          2 & 3 & 2 & 1\\
+          3 & 2 & 1 & 3
+    \end{tabular}
+\end{center}
+
+
+ 
+\noindent \textbf{Trivial quandle} of order $n$. The set $\{1,2,\dots,n\}$ with the operation  $x \cdot y = y$ form a quandle of order $n$ denoted by $\algebra{T_n}$.\newline
+The Cayley table of $\mathbf{T_3} = (\{1,2,3\}, \cdot)$ is
+\begin{center}
+    \begin{tabular}{c|c c c c}
+         $\cdot$ & 1 & 2 & 3 \\
+         \hline
+          1 & 1 & 2 & 3\\
+          2 & 1 & 2 & 3\\
+          3 & 1 & 2 & 3
+    \end{tabular}
+\end{center}
+Other constructions, perhaps more used by mathematicians, arise from groups. \newline\newline
+Let $G$ be a group.\newline\newline
+\textbf{Core Quandle}. The underlying set of $G$ and the operation $x \cdot y = xy^{-1}x$ form a quandle, denoted by $\text{Core}(G)$.\newline\newline
+\textbf{n-Conjugation Quandle}. 
+    Let $n \in \mathbb{N}$. The underlying set of  $G$ and the operation $x \cdot y = x^nyx^{-n}$ form a quandle denoted by $\text{Conj}_n(G)$.\newline\newline
+\textbf{Coset Quandle}. Let $f \in \Aut(G)$ and  $H \leq G$ such that $\forall x \in H\quad f(x)=x$.\newline
+The left coset $G/H$ and the operation $xH \cdot yH = xf(x^{-1}y)H$ form a quandle, denoted by  $\mathcal{Q}_{\text{Hom}}(G,H,f)$.
+
+\end{example}
+
+
+
+\noindent The definition of a few of the most fundamental notions in the field of universal algebra, subalgebras, quotient structures and homomorphisms, will follow. Given the generality of the matter, the interested reader can refer to \cite{burris1981course}, for all undefined notions.
+\begin{definition} \cite{burris1981course}\newline
+Let $\algebra{A} = (S, \cdot, \backslash)$ be a left quasigroup. Let $S'\subseteq S$. When \[\forall x,y \in S'\quad x\cdot y \in S'\quad\land\quad x\backslash y \in S',\]
+that is, when $S'$ is closed under the operations of $\algebra{A}$, it can be associated with the restriction of the operations of $\algebra{A}$ to $S'$ to form $\algebra{B} = (S', \cdot_{|S'}, \backslash_{|S'})$. Consequently, $\algebra{B}$ is called a \emph{subalgebra} of $\algebra{A}$. \newline In general, any non-empty finite subset $X$ of $S$ can be expanded to be a subalgebra of $\algebra{A}$:
+ \[ \Sg(X) = \bigcap\{U : X \subseteq U \land U~\text{is closed under the operations of}~\algebra{A} \} \]
+ $(\Sg(X), \cdot_{|\Sg(X)}, \backslash_{|\Sg(X)})$ is a subalgebra of $\algebra{A}$.\newline
+ The set of all subalgebras of a left quasigroup $\algebra{A}$ is denoted by $\Sub(\algebra{A})$.\newline
+ If, for a set $\emptyset \neq X \subseteq S$, $\Sg(X)=S$ then $X$ is a generating set of $\algebra{A}$ and its elements are called \emph{generators}.
+\end{definition}
+\noindent Given a non-empty set $S$, one can define a \emph{relation} $\sim\subseteq S\times S$ on $S$; for two elements $x,y\in S$, $(x,y)\in \sim$ is often denoted by $x\sim y$. \newline Relations can have several properties. S relation is called \emph{reflexive} when for any element $x\in S\quad (x,x)\in~\sim$; \emph{symmetric} when $(x,y)\in~\sim$ implies that $(y,x)\in~\sim$, for any two elements $x,y\in S$; or, \emph{transitive} when 
+the fact that $(x,y)$ and $(y,z)$ are both elements of $\sim$ implies that 
+$(x,z)$ is also an element of $\sim$. When a relation is  reflexive, symmetric and transitive, then it is called \emph{equivalence relation}. \newline Such a relation $\sim$ on a non-empty set $S$ is particularly important because it induces a partition, usually denoted by $S/\sim$, that is a disjoint set of sets (called \emph{equivalence classes}) such that their union is equal to $S$.  Equivalence classes are also called \emph{blocks of the partition} and are denoted by $[x]_\sim = \{ y \in S : x \sim y\}$, for an element $x\in S$. It is possible to order the partitions of a set:  for two partitions $\pi_1,\pi_2$ of some non-empty set $S$, one says $\pi_1 \leq \pi_2$ when each block of $\pi_1$ is contained in some block of $\pi_2$.\newline 
+
+Equivalence relations that respect the operations of a left quasigroup are called \emph{congruences} and are defined next.
+\begin{definition} \cite{burris1981course}\textcolor{white}{line}\newline\label{congruencedef}
+Let $\mathbf{A}=(S,\cdot)$ be a left quasigroup and $\sim$ an equivalence relation on $S$. If
+\[\forall x,y,z,t \in S \quad x \sim z \land y \sim t \implies x \cdot y \sim z \cdot t\quad \land \quad x \backslash y \sim z \backslash t,\]
+that is, $\sim$ has the \emph{compatibility property}, then $\sim$ is a \emph{congruence relation} on $\mathbf{A}$. \newline The set of all congruences on an algebra $\mathbf{A}$ is denoted by $\Con(\mathbf{A})$.
+\end{definition}
+\noindent For quandles, the blocks of the partitions induced by congruence relations, associated with the restriction to them of the operations, are subalgebras.
+\noindent The definiton of congruences allows the definition of a few important groups. 
+\begin{definition} \cite{BonStanCommTheory2021}\label{defdis}\textcolor{white}{line}\newline
+Let $\sim$ be an equivalence relation on a left quasigroup $\algebra{A} = (S, \cdot)$.
+\begin{itemize}
+\item \textit{Displacement group}, $\Dis(\algebra{A})$: $\langle L_xL_y^{-1} : x, y \in \algebra{A}\rangle$
+    \item \textit{Kernel relative to $\sim$}, $\Dis^{\sim}$: $\{ h \in \Dis(\algebra{A}) : h(x)\sim x~\text{for every}~x \in \algebra{A}\}$ 
+    \item \textit{Displacement group relative to $\sim$},  $\Dis_{\sim}(\algebra{A})$:\newline $\langle \{ hL_xL_y^{-1}h^{-1}: x\sim y~\land~ h\in \LMlt(\algebra{A}) \} \rangle$; in particular, if $\algebra{A}$ is a rack, then $\Dis_{\sim}(\algebra{A}) = \langle L_xL_y^{-1}: x\sim y\rangle$.
+\end{itemize}
+\emph{Note:} $\Dis(\algebra{A}) = \Dis_{\sim}(\algebra{A})$ when $\sim~=S\times S$.
+\end{definition}
+\noindent It is worth pointing out that, for quandles, the actions of $\Dis(\algebra{A})$ and  $\LMlt(\algebra{A})$ have the same orbits \cite{BonStanCommTheory2021}.\newline\newline 
+\noindent One can establish an algebraic structure on the set of equivalence classes obtained by partitioning the underlying set of an an algebra according to a congruence relation. This idea leads to the following definition of quotient structures.
+\begin{definition} \cite{burris1981course}\label{quotientdef}\textcolor{white}{line}\newline\
+Let $\mathbf{A}=(S,\cdot, \backslash)$ be a left quasigroup and $\sim$ a congruence relation on $\mathbf{A}$.\newline Let $\mathbf{B} = (S/\sim, \star, \backslash_\star)$ where 
+\[[x]_\sim \star [y]_\sim = [x \cdot y]_\sim,\quad \text{for any }[x]_\sim,[y]_\sim \in S/\sim\]
+
+\[[x]_\sim \backslash_\star [y]_\sim = [x \backslash y]_\sim,\quad \text{for any }[x]_\sim,[y]_\sim \in S/\sim\]
+
+\noindent $\mathbf{B}$ is a \emph{quotient left quasigroup} of $\mathbf{A}$. 
+\end{definition}
+
+Quotient structures are important in their own right. In some cases, they can be used to obtain information about a superstructure and lead to the classification of the entire family of a structure. For instance, the interested reader can refer to Section 4 of \cite{bonatto2022connected} to see how this strategy played a fundamental role in classifying non-simple connected quandles of size $pq$ where $p$ and $q$ are different prime numbers.\newline\newline
+The definition of \emph{homomorphisms}, particular functions that preserve the operation of the left quasigroup on which they are defined, will follow.
+\begin{definition} \cite{burris1981course}\label{automorphism}
+\begin{itemize} 
+
+
+    \item Let $\algebra{A} = (S, \cdot)$ and $\algebra{B}=(S',\star)$ be two left quasigroups.\newline Let $\phi : \algebra{A} \to \algebra{B}$.\newline
+If 
+\[\forall x,y \in \algebra{A} \quad \phi(x\cdot y)= \phi(x)\star \phi(y)\]
+then $\phi$ is a \emph{homomorphism}.
+% subalgebra over subalgebra
+
+    \item Let $\phi : \algebra{A} \to \algebra{B}$ be a homomorphism. If $\phi$ is injective, $\phi$ is called a \emph{monomorphism}, or an \emph{embedding} of $\algebra{A}$ into $\algebra{B}$.  The image of $\phi$ is a \emph{subalgebra} of $\algebra{B}$ denoted by $\phi(\algebra{A}) \leq \algebra{B}$. 
+    
+
+     \item Let $\phi : \algebra{A} \to \algebra{B}$ be a homomorphism. If $\phi$ is surjective, $\phi$ is called an \emph{epimorphism}. 
+     
+     \item Let $\phi : \algebra{A} \to \algebra{B}$ be a homomorphism. If $\phi$ is injective and surjective, that is, $\phi$ is bijective, $\phi$ is called an \emph{isomorphism}. \newline If there exists an isomorphism $\phi: \algebra{A} \to \algebra{B}$, it is indicated $\algebra{A} \cong \algebra{B}$.\newline
+In case $\algebra{A}=\algebra{B}$, $\phi$ is called an \emph{automorphism}. \newline The set of all automorphisms on a left quasigroup $\algebra{A}$ is a subgroup of the symmetric group on the underlying set of $\algebra{A}$ and it is denoted by $\Aut(\algebra{A})$ \cite{warner1990modern}.
+\end{itemize}
+\end{definition}
+\noindent There are two strong connections between homomorphisms and congruences on left quasigroups. Every homomorphism $h : \algebra{A} \to \algebra{B}$ induces a congruence, called \emph{kernel}, on its domain, defined as $\text{ker}(h) = \{(x,y) : f(x) = f(y) \}$. \newline 
+
+As explained above, congruence relations induce a partition of the set over which they are defined. There exists a function, called \emph{canonical projection}, that maps an element to its equivalence class relative to the congruence. The canonical projection is also an epimorphism from the original left quasigroup $\algebra{A}$ to its quotient structure given a congruence $\sim$, $\algebra{A}/\sim$.\newline\newline
+Throughout the document, and especially when dealing with homomorphisms, there will be references to so-called \emph{invariants} under homomorphism. Contrary to what the word might suggest and to what was intended in \hyperref[intro1Connected]{Section 1}, these \emph{invariants} can change, but in a ``predictable" way.\newline
+It is possible to distinguish two types of invariant: \emph{global} or \emph{element-wise}.\newline\newline
+\textit{Global invariants.}\newline
+Let $p$ assign a natural number to any left quasigroup. Let  $\algebra{A},~\algebra{B}$  be two left quasigroups such that $\algebra{A}$ can be embedded into $\algebra{B}$ and $p(\algebra{A})\leq p(\algebra{B})$, then $p$ is called a \emph{global invariant}. For example:\newline
+Let $\Nil(G)$ indicate the nilpotency class of a group $G$, let $\algebra{A}$ and $\algebra{B}$ be two left quasigroups such that there exists a monomorphism $h : \algebra{A} \to \algebra{B}$. \newline Then $\Nil(\LMlt(\algebra{A})) \leq \Nil(\LMlt(\algebra{B}))$. A similar fact holds for the displacement group of the left quasigroups: let $\algebra{A}$ and $\algebra{B}$ be two left quasigroups such that there exists a monomorphism $h : \algebra{A} \to \algebra{B}$, then $\Nil(\Dis(\algebra{A})) \leq \Nil(\Dis(\algebra{B}))$.
+% \newline For a left quasigroup $\algebra{A}$, the congruences induce group epimorphisms between the displacement (resp. left multiplication) group  of $\algebra{A}$ and the displacement (resp. left multiplication) group of its quotient structures.
+\newline
+Restricting the focus to quandles and to isomorphisms, there also exist polynomial invariants of finite quandles such as the one presented in \cite{nelson2008polynomial} by Sam Nelson which can help in ruling out the existance of an isomorphism between two quandles $\algebra{A}$ and $\algebra{B}$.\newline\newline
+\textit{Element-wise invariants.}\newline
+Let $p$ be an operator that assigns a map $p_\algebra{A} : \algebra{A} \to \mathbb{N}$ to any left qusigroup $\algebra{A}$.\newline
+Let $\algebra{A}$ and $\algebra{B}$ be two left quasigroups. If for every monomorphism $h :\algebra{A} \to \algebra{B}$ and every $x \in \algebra{A}$ it holds that $p_\algebra{A}(x) \leq p_\algebra{B}(h(x))$ then $p$ is called \emph{element-wise} invariant.\newline
+It is worth showing two examples of what these invariants might look like for an element $x$ of a left quasigroup $\algebra{A} = (S, \cdot, \backslash)$:
+\begin{itemize}
+    \item Number of elements $y \in S$ such that $L_x(y) = y$.
+    \item Number of elements $y \in S$ such that $L_y(x) = x$.
+\end{itemize}
+When, for an element $x$ of a left quasigroup $\algebra{A}$, an element-wise invariant $p$ and a left quasigroup $\algebra{B}$, there exists no element $y\in\algebra{B}$ such that $p(x)\leq p(y)$ then the existence of a monomorphism between $\algebra{A}$ and $\algebra{B}$ can be ruled out.

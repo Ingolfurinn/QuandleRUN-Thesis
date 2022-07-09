@@ -264,5 +264,5 @@ end intrinsic;
 
 intrinsic Kernel_a(Q :: Qndl, alpha :: SetIndx[SetEnum[RngIntElt]]) -> SetEnum
 { Returns the kernel relative to the congruence alpha represented by its induced partion of the underlying set of the quandle Q }
-    return internal_Kernel_a(internal_Kernel_a(Q), alpha);	
+    return internal_Kernel_a(internal_QuandleMatrix(Q), alpha);	
 end intrinsic;

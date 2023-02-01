@@ -311,11 +311,21 @@ intrinsic internal_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[S
 
     genA := internal_Generators(A);
 	homomorphism := [[ 0 : x in A ], []];
+
+    orbits := Orbits(internal_Inn(A));
+    Images := [];
+    for gen in genA do
+        for orbit in orbits do
+            if gen in orbit then
+                Images[gen] := orbit;
+            end if;
+        end for;
+    end for;
 	
 	return internal_utility_Monomorphism(A, B, genA, homomorphism);
 end intrinsic;
 
-intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[GSetIndx[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
     if IsEmpty(Generators) then 
@@ -371,9 +381,9 @@ intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: S
 	x := 0;
 	ExtractRep(~Generators, ~x);
 
-	Images := [ x : x in B[1] | x notin Homomorphism[1] ];
+	Images_x := Images[x];
 	
-	for y in Images do 
+	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);

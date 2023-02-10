@@ -388,7 +388,7 @@ intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: S
 		HomomorphismExpanded := Homomorphism;
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);
-		mapping := internal_utility_Monomorphism(A, B, Generators, HomomorphismExpanded);
+		mapping := internal_utility_Monomorphism(A, B, Generators, HomomorphismExpanded, Images);
 		if mapping ne [] then 
 			return mapping;
 		end if;

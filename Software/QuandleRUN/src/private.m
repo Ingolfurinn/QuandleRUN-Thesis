@@ -333,7 +333,7 @@ intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: S
 
 		new := {* x : x in Homomorphism[2] *};
 		old := { };
-		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
+		//lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
 		
 		Pairs := [];
 
@@ -359,11 +359,12 @@ intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: S
 				Hy := Homomorphism[1][y];
 				Hz := Homomorphism[1][z];
 				HxHy := B[Hx, Hy];
-				if (Hz eq 0) and (not lookupTable[HxHy]) then 
+				//if (Hz eq 0) and (not lookupTable[HxHy]) then
+                if (Hz eq 0) then
 					Homomorphism[1][z] := HxHy;
 					Append(~Homomorphism[2], z);
 					Include(~results, z);
-					lookupTable[HxHy] := true;
+					//lookupTable[HxHy] := true;
 				else 
 					if Hz ne HxHy then 
 						return [];

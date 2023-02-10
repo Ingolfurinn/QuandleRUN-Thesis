@@ -318,11 +318,12 @@ intrinsic internal_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[S
         for orbit in orbits do
             if gen in orbit then
                 Images[gen] := orbit;
+                break;
             end if;
         end for;
     end for;
 	
-	return internal_utility_Monomorphism(A, B, genA, homomorphism);
+	return internal_utility_Monomorphism(A, B, genA, homomorphism, Images);
 end intrinsic;
 
 intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[GSetIndx[RngIntElt]]) -> SeqEnum[RngIntElt]

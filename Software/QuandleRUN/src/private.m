@@ -325,7 +325,7 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
 	return utility_SpecialMonomorphism(matrixA, B, genA, homomorphism, Images);
 end intrinsic;
 
-intrinsic utility_SpecialMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
     if IsEmpty(Generators) then
@@ -353,7 +353,7 @@ intrinsic utility_SpecialMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: Seq
 			for pair in Pairs do
 				x := pair[1];
 				y := pair[2];
-				z := A[x,y];
+				z := A[Qa`_NumberingMapInverse(x),Qa`_NumberingMapInverse(y)];
 				Hx := Homomorphism[1][x];
 				Hy := Homomorphism[1][y];
 				Hz := Homomorphism[1][z];

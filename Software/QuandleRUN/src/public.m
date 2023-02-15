@@ -55,7 +55,7 @@ intrinsic DihedralQuandle(X :: SetIndx[RngIntElt]) -> Qndl
 end intrinsic;
 
 intrinsic QuandleFM(M :: SeqEnum[SeqEnum[RngIntElt]], uSet :: SetIndx[RngIntElt]) -> Qndl
-{ A Quandle with underlying set uSet and operation described by M }
+{ A Quandle with underlying set uSet and operation described by M -- TODO: create internal}
 
     require isQuandle(M, {@ M[i,i] : i in [1..#M] @}): "This is not a quandle matrix.";
 
@@ -80,10 +80,15 @@ end intrinsic;
 
 intrinsic 'eq' (Q :: Qndl, R :: Qndl) -> BoolElt
 { Returns whether Q and R are the same, internally }
-	if #Q`Set ne #R`Set then 
+	if #Q`Set ne #R`Set then
 		return false;
 	end if;
 	return internal_QuandleMatrix(Q) eq internal_QuandleMatrix(R);
+end intrinsic;
+
+intrinsic '#' (Q :: Qndl) -> RngIntElt
+{ Returns whether Q and R are the same, internally }
+	return #Q`Set;
 end intrinsic;
 
 intrinsic Inn(Q :: Qndl) -> GrpPerm

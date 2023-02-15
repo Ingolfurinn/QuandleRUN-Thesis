@@ -300,7 +300,104 @@ intrinsic internal_Subquandles(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SetE
     
 end intrinsic;
 
+intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+{ It should not be used by an external user : Returns, if one exists, a monomorphism from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
+    if #A gt #B then
+        return [];
+    end if;
+
+    matrixA := QuandleMatrix(A)
+    genA := { A`_NumberingMapInverse(x) : x in internal_Generators(matrixA) };
+	homomorphism := [[ 0 : x in matrixA ], []];
+
+    orbits := Orbits(internal_Inn(B));
+    Images := [];
+    for gen in genA do
+        for orbit in orbits do
+            if gen in orbit then
+                Images[gen] := [ x : x in orbit ];
+                break;
+            end if;
+        end for;
+    end for;
+
+	return utility_SpecialMonomorphism(matrixA, B, genA, homomorphism, Images);
+end intrinsic;
+
+intrinsic utility_SpecialMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+{ It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
+
+    if IsEmpty(Generators) then
+
+		new := {* x : x in Homomorphism[2] *};
+		old := { };
+		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
+
+		Pairs := [];
+
+		while not IsEmpty(new) do
+			for x,y in new do
+				Append(~Pairs, <x,y>);
+			end for;
+
+			for x in old do
+				for y in new do
+					Append(~Pairs, <x,y>);
+					Append(~Pairs, <y,x>);
+				end for;
+			end for;
+
+			results := {* *};
+
+			for pair in Pairs do
+				x := pair[1];
+				y := pair[2];
+				z := A[x,y];
+				Hx := Homomorphism[1][x];
+				Hy := Homomorphism[1][y];
+				Hz := Homomorphism[1][z];
+				HxHy := B[Hx, Hy];
+				if (Hz eq 0) and (not lookupTable[HxHy]) then
+					Homomorphism[1][z] := HxHy;
+					Append(~Homomorphism[2], z);
+					Include(~results, z);
+					lookupTable[HxHy] := true;
+				else
+					if Hz ne HxHy then
+						return [];
+					end if;
+				end if;
+			end for;
+			old := old join new;
+			new := results;
+
+		end while;
+
+		return Homomorphism[1];
+	end if;
+
+
+	x := 0;
+	ExtractRep(~Generators, ~x);
+
+    Images_x := [ y : y in Images[x] | y notin Homomorphism[1] ];
+
+	for y in Images_x do
+		HomomorphismExpanded := Homomorphism;
+		HomomorphismExpanded[1][x] := y;
+		Append(~HomomorphismExpanded[2], x);
+        Exclude(~Images[x], y)
+		mapping := utility_SpecialMonomorphism(A, B, Generators, HomomorphismExpanded, Images);
+		if mapping ne [] then
+			return mapping;
+		end if;
+
+	end for;
+
+	return [];
+
+end intrinsic;
 
 intrinsic internal_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : Returns, if one exists, a monomorphism from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }

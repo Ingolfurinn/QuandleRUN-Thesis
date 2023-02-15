@@ -61,8 +61,9 @@ intrinsic QuandleFM(M :: SeqEnum[SeqEnum[RngIntElt]], uSet :: SetIndx[RngIntElt]
 
     T := New(Qndl);
 	T`Set := uSet;
-	T`Operation := map< car<T`Set,T`Set> -> M[1] | [ <<x,y>, M[T`_NumberingMap(x), T`_NumberingMap(y)]> : x,y in T`Set ] >;
     internal_NumberingMap(~T);
+	T`Operation := map< car<T`Set,T`Set> -> M[1] | [ <<x,y>, M[T`_NumberingMap(x), T`_NumberingMap(y)]> : x,y in T`Set ] >;
+
     require isQuandle(QuandleMatrix(T), T`Set): "The provided set does not generate a quandle with this associated operation.";
 
 	return T;

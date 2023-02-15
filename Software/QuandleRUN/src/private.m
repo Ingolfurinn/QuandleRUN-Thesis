@@ -308,7 +308,7 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
     end if;
 
     matrixA := QuandleMatrix(A);
-    genA := { A`_NumberingMapInverse(x) : x in internal_Generators(matrixA) };
+    genA := { A`_NumberingMapInverse(x) : x in internal_Generators(internal_QuandleMatrix(A)) };
 	homomorphism := [[ 0 : x in matrixA ], []];
 
     orbits := Orbits(internal_Inn(B));

@@ -57,7 +57,7 @@ end intrinsic;
 intrinsic QuandleFM(M :: SeqEnum[SeqEnum[RngIntElt]], uSet :: SetIndx[RngIntElt]) -> Qndl
 { A Quandle with underlying set uSet and operation described by M }
 
-    require isQuandle(M, {@ M[i,i] : i in [1..#M] @};): "This is not a quandle matrix.";
+    require isQuandle(M, {@ M[i,i] : i in [1..#M] @}): "This is not a quandle matrix.";
 
     T := New(Qndl);
 	T`Set := uSet;

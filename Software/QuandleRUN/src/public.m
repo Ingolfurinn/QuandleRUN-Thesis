@@ -17,6 +17,7 @@ intrinsic Print(Q :: Qndl)
 	printf "]";
 end intrinsic;
 
+
 intrinsic Quandle(X :: SetIndx, M :: Map[SetCart, SetIndx]) -> Qndl
 { It generates the Quandle with underlying set X and operation M}
 	require ExtendedType(X) eq ExtendedType(Codomain(M)): "The provided operation is not defined on the provided underlying set.";
@@ -26,7 +27,7 @@ intrinsic Quandle(X :: SetIndx, M :: Map[SetCart, SetIndx]) -> Qndl
     T`Operation := M;
 	internal_NumberingMap(~T);
 	require isQuandle(internal_QuandleMatrix(T), {@ x : x in Codomain(T`_NumberingMap) @}): "The provided set does not generate a quandle with this associated operation.";
-        
+
 	return T;
 end intrinsic;
 
@@ -56,11 +57,13 @@ end intrinsic;
 intrinsic QuandleFM(M :: SeqEnum[SeqEnum[RngIntElt]], uSet :: SetIndx[RngIntElt]) -> Qndl
 { A Quandle with underlying set uSet and operation described by M }
 
+    require isQuandle(M, {@ M[i,i] : i in [1..#M] @};): "This is not a quandle matrix.";
+
     T := New(Qndl);
-	T`Set := {@ M[i,i] : i in [1..#M] @};
-	require isQuandle(M, T`Set): "This is not a quandle matrix.";
-	internal_NumberingMap(~T);
+	T`Set := uSet;
 	T`Operation := map< car<T`Set,T`Set> -> M[1] | [ <<x,y>, M[T`_NumberingMap(x), T`_NumberingMap(y)]> : x,y in T`Set ] >;
+    internal_NumberingMap(~T);
+    require isQuandle(QuandleMatrix(T), T`Set): "The provided set does not generate a quandle with this associated operation.";
 
 	return T;
 end intrinsic;

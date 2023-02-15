@@ -307,7 +307,7 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
         return [];
     end if;
 
-    matrixA := QuandleMatrix(A)
+    matrixA := QuandleMatrix(A);
     genA := { A`_NumberingMapInverse(x) : x in internal_Generators(matrixA) };
 	homomorphism := [[ 0 : x in matrixA ], []];
 

@@ -323,7 +323,6 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
     end for;
 
 	return utility_SpecialMonomorphism(A, matrixA, B, genA, homomorphism, Images);
-    //return [];
 end intrinsic;
 
 intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
@@ -335,6 +334,56 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
     printf "\n \n Homomorphism: \n";
     print(Homomorphism);
     printf "\n ============================= \n \n";
+
+    if IsEmpty(Generators) then
+
+		new := {* Qa`_NumberingMapInverse(x) : x in Homomorphism[2] *};
+		old := { };
+		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
+
+		Pairs := [];
+
+		while not IsEmpty(new) do
+			for x,y in new do
+				Append(~Pairs, <x,y>);
+			end for;
+
+			for x in old do
+				for y in new do
+					Append(~Pairs, <x,y>);
+					Append(~Pairs, <y,x>);
+				end for;
+			end for;
+
+			results := {* *};
+
+			for pair in Pairs do
+				x := pair[1];
+				y := pair[2];
+				z := A[x,y];
+				Hx := Homomorphism[1][x];
+				Hy := Homomorphism[1][y];
+				Hz := Homomorphism[1][Qa`_NumberingMapInverse(z)];
+				HxHy := B[Hx, Hy];
+				if (Hz eq 0) and (not lookupTable[HxHy]) then
+					Homomorphism[1][Qa`_NumberingMapInverse(z)] := HxHy;
+					Append(~Homomorphism[2], z);
+					Include(~results, Qa`_NumberingMapInverse(z));
+					lookupTable[HxHy] := true;
+				else
+					if Hz ne HxHy then
+						return [];
+					end if;
+				end if;
+			end for;
+			old := old join new;
+			new := results;
+
+		end while;
+
+		return Homomorphism[1];
+	end if;
+
 	x := 0;
 	ExtractRep(~Generators, ~x);
 
@@ -342,10 +391,10 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 
 	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;
-		HomomorphismExpanded[1][x] := y;
+		HomomorphismExpanded[1][Qa`_NumberingMapInverse(x)] := y;
 		Append(~HomomorphismExpanded[2], x);
         Exclude(~Images_x, y);
-        Images[x] = Images_x;
+        Images[x] := Images_x;
         return utility_SpecialMonomorphism(Qa, A, B, Generators, HomomorphismExpanded, Images);
 	end for;
 

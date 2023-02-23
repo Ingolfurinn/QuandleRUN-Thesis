@@ -337,7 +337,7 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 
     if IsEmpty(Generators) then
 
-		new := {* Qa`_NumberingMapInverse(x) : x in Homomorphism[2] *};
+		new := {* Qa`_NumberingMap(x) : x in Homomorphism[2] *};
 		old := { };
 		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
 
@@ -363,12 +363,12 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 				z := A[x,y];
 				Hx := Homomorphism[1][x];
 				Hy := Homomorphism[1][y];
-				Hz := Homomorphism[1][Qa`_NumberingMapInverse(z)];
+				Hz := Homomorphism[1][Qa`_NumberingMap(z)];
 				HxHy := B[Hx, Hy];
 				if (Hz eq 0) and (not lookupTable[HxHy]) then
-					Homomorphism[1][Qa`_NumberingMapInverse(z)] := HxHy;
+					Homomorphism[1][Qa`_NumberingMap(z)] := HxHy;
 					Append(~Homomorphism[2], z);
-					Include(~results, Qa`_NumberingMapInverse(z));
+					Include(~results, Qa`_NumberingMap(z));
 					lookupTable[HxHy] := true;
 				else
 					if Hz ne HxHy then
@@ -391,7 +391,7 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 
 	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;
-		HomomorphismExpanded[1][Qa`_NumberingMapInverse(x)] := y;
+		HomomorphismExpanded[1][Qa`_NumberingMap(x)] := y;
 		Append(~HomomorphismExpanded[2], x);
         Exclude(~Images_x, y);
         Images[x] := Images_x;

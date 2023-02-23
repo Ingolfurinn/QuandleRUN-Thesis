@@ -344,8 +344,9 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 		HomomorphismExpanded := Homomorphism;
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);
-        Exclude(~Images[x], y);
-        return utility_SpecialMonomorphism(Qa, A, B, generators, HomomorphismExpanded, Images);
+        Exclude(~Images_x, y);
+        Images[x] = Images_x;
+        return utility_SpecialMonomorphism(Qa, A, B, Generators, HomomorphismExpanded, Images);
 	end for;
 
 	return [];

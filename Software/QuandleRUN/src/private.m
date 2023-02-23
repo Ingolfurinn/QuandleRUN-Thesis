@@ -322,62 +322,19 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
         end for;
     end for;
 
-	return utility_SpecialMonomorphism(A, matrixA, B, genA, homomorphism, Images);
+	//return utility_SpecialMonomorphism(A, matrixA, B, genA, homomorphism, Images);
+    return [];
 end intrinsic;
 
 intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
-
-    if IsEmpty(Generators) then
-
-		new := {* x : x in Homomorphism[2] *};
-		old := { };
-		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
-
-		Pairs := [];
-
-		while not IsEmpty(new) do
-			for x,y in new do
-				Append(~Pairs, <x,y>);
-			end for;
-
-			for x in old do
-				for y in new do
-					Append(~Pairs, <x,y>);
-					Append(~Pairs, <y,x>);
-				end for;
-			end for;
-
-			results := {* *};
-
-			for pair in Pairs do
-				x := pair[1];
-				y := pair[2];
-				z := A[Qa`_NumberingMapInverse(x),Qa`_NumberingMapInverse(y)];
-				Hx := Homomorphism[1][x];
-				Hy := Homomorphism[1][y];
-				Hz := Homomorphism[1][z];
-				HxHy := B[Hx, Hy];
-				if (Hz eq 0) and (not lookupTable[HxHy]) then
-					Homomorphism[1][z] := HxHy;
-					Append(~Homomorphism[2], z);
-					Include(~results, z);
-					lookupTable[HxHy] := true;
-				else
-					if Hz ne HxHy then
-						return [];
-					end if;
-				end if;
-			end for;
-			old := old join new;
-			new := results;
-
-		end while;
-
-		return Homomorphism[1];
-	end if;
-
-
+    printf "\n ============================= \n Generators: \n";
+    print(Generators);
+    printf "\n \n Images: \n";
+    print(Images);
+    printf "\n \n Homomorphism: \n";
+    print(Homomorphism);
+    printf "\n ============================= \n \n";
 	x := 0;
 	ExtractRep(~Generators, ~x);
 
@@ -388,11 +345,7 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);
         Exclude(~Images[x], y);
-		mapping := utility_SpecialMonomorphism(Qa, A, B, Generators, HomomorphismExpanded, Images);
-		if mapping ne [] then
-			return mapping;
-		end if;
-
+        return utility_SpecialMonomorphism(Qa, matrixA, B, generators, HomomorphismExtended, Images);
 	end for;
 
 	return [];

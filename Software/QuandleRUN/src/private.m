@@ -322,8 +322,8 @@ intrinsic SpecialMonomorphism(A :: Qndl, B :: SeqEnum[SeqEnum[RngIntElt]]) -> Se
         end for;
     end for;
 
-	//return utility_SpecialMonomorphism(A, matrixA, B, genA, homomorphism, Images);
-    return [];
+	return utility_SpecialMonomorphism(A, matrixA, B, genA, homomorphism, Images);
+    //return [];
 end intrinsic;
 
 intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
@@ -345,7 +345,7 @@ intrinsic utility_SpecialMonomorphism(Qa :: Qndl, A :: SeqEnum[SeqEnum[RngIntElt
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);
         Exclude(~Images[x], y);
-        return utility_SpecialMonomorphism(Qa, matrixA, B, generators, HomomorphismExtended, Images);
+        return utility_SpecialMonomorphism(Qa, A, B, generators, HomomorphismExpanded, Images);
 	end for;
 
 	return [];

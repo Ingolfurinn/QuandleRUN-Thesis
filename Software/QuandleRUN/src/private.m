@@ -337,7 +337,9 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
                 break;
             end if;
         end for;
+    end for;
 	homomorphism := [[ 0 : x in A ], []];
+
 
 	return internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
 end intrinsic;

@@ -745,7 +745,7 @@ end intrinsic;
 
 
 // invariants 2, 3, 4, 6, 11
-intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
 { It returns the vector of invariants of the quandle represented by F }
     QSet := [1..#F];
 
@@ -801,5 +801,5 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIn
         end for;
     end for;
 
-    return partition;
+    return Q_invariants;
 end intrinsic;

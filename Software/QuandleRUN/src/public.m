@@ -124,7 +124,7 @@ intrinsic Congruences(Q :: Qndl) -> SeqEnum[SetIndx[SetEnum[RngIntElt]]]
 	return internal_Congruences(internal_QuandleMatrix(Q)); 
 end intrinsic;
 
-intrinsic Invariants(Q :: Qndl) -> SeqEnum[RngIntElt]
+intrinsic Invariants(Q :: Qndl) -> SeqEnum[SeqEnum[RngIntElt]]
 { Returns the vector of invariants of the quandle Q }
 	return internal_Invariants(internal_QuandleMatrix(Q));
 end intrinsic;

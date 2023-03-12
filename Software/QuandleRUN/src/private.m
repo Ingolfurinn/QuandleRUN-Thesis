@@ -745,8 +745,8 @@ end intrinsic;
 
 
 // invariants 2, 3, 4, 6, 11
-intrinsic internal_CongruencesDisconnected(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SeqEnum[RngIntElt]]
-{ It returns all the congruences of A }
+intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+{ It returns the vector of invariants of the quandle represented by F }
     QSet := [1..#F];
 
 

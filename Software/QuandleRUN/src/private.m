@@ -801,4 +801,5 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIn
         end for;
     end for;
 
+    return partition;
 end intrinsic;

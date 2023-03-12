@@ -843,3 +843,64 @@ intrinsic internal_CongruencesDisconnected(F :: SeqEnum[SeqEnum[RngIntElt]]) -> 
     end while;
     return congruences;
 end intrinsic;
+
+
+
+// invariants 2, 3, 4, 6, 11
+intrinsic internal_CongruencesDisconnected(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SetIndx[SeqEnum[RngIntElt]]
+{ It returns all the congruences of A }
+    QSet := [1..#F];
+
+
+    Q_invariants := [];
+
+    for p in QSet do
+        invariants := [0, 0, 0, 0,  0];
+
+        inv6 := {};
+
+
+        for x in QSet do
+            px := F[p][x];
+
+            if px eq x then
+                invariants[1] +:= 1;
+            end if;
+
+            xp := F[x][p];
+
+            Include(~inv6,xp);
+
+            if xp eq x then
+                invariants[2] +:= 1;
+            end if;
+
+            if F[px][p] eq p then
+                invariants[3] +:= 1;
+            end if;
+
+            if xp eq px then
+                invariants[5] +:= 1;
+            end if;
+
+        end for;
+
+        invariants[4] := #inv6;
+
+        Append(~Q_invariants,invariants);
+    end for;
+
+    QInvSet := SetToIndexedSet(Set(Q_invariants));
+
+    partition := [ [ ] : x in QInvSet ];
+
+    for index1 in QSet do
+        for index2 := 1 to #partition do
+            if Q_invariants[index1] eq QInvSet[index2] then
+                Append(~partition[index2], index1);
+                break;
+            end if;
+        end for;
+    end for;
+
+end intrinsic;

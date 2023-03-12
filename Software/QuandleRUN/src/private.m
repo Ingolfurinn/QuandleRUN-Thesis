@@ -332,7 +332,7 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     for generator in genA do
         invs := internal_ElementInvariants(A,generator);
         for orbit in invImages do
-            if invs leq orbit[2] then
+            if invs le orbit[2] then
                 Images[generator] := orbit[1];
                 break;
             end if;

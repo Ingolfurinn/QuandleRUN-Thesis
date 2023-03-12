@@ -313,6 +313,108 @@ intrinsic internal_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[S
 	return internal_utility_Monomorphism(A, B, genA, homomorphism);
 end intrinsic;
 
+intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
+{ It should not be used by an external user : Returns, if one exists, a monomorphism from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
+
+    if #A gt #B then
+        return [];
+    end if;
+
+    genA := internal_Generators(A);
+    orbitsB := Orbits(internal_Inn(B));
+    invImages := [];
+    for orbit in orbitsB do
+        Include(~invImages, <orbit,internal_ElementInvariants(B,orbit[1])>);
+    end for;
+
+    Images := [];
+
+    for generator in genA do
+        invs := internal_ElementInvariants(A,generator);
+        for orbit in invImages do
+            if invs leq orbit[2] then
+                Images[generator] := orbit[1];
+                break;
+            end if;
+        end for;
+	homomorphism := [[ 0 : x in A ], []];
+
+	return internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
+end intrinsic;
+
+intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[GSetIndx[RngIntElt]]) -> SeqEnum[RngIntElt]
+{ It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
+
+    if IsEmpty(Generators) then
+
+		new := {* x : x in Homomorphism[2] *};
+		old := { };
+		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
+
+		Pairs := [];
+
+		while not IsEmpty(new) do
+			for x,y in new do
+				Append(~Pairs, <x,y>);
+			end for;
+
+			for x in old do
+				for y in new do
+					Append(~Pairs, <x,y>);
+					Append(~Pairs, <y,x>);
+				end for;
+			end for;
+
+			results := {* *};
+
+			for pair in Pairs do
+				x := pair[1];
+				y := pair[2];
+				z := A[x,y];
+				Hx := Homomorphism[1][x];
+				Hy := Homomorphism[1][y];
+				Hz := Homomorphism[1][z];
+				HxHy := B[Hx, Hy];
+				if (Hz eq 0) and (not lookupTable[HxHy]) then
+					Homomorphism[1][z] := HxHy;
+					Append(~Homomorphism[2], z);
+					Include(~results, z);
+					lookupTable[HxHy] := true;
+				else
+					if Hz ne HxHy then
+						return [];
+					end if;
+				end if;
+			end for;
+			old := old join new;
+			new := results;
+
+		end while;
+
+		return Homomorphism[1];
+	end if;
+
+
+	x := 0;
+	ExtractRep(~Generators, ~x);
+
+	Images_x := [ y : y in Images[x] | x notin Homomorphism[1] ];
+
+	for y in Images_x do
+		HomomorphismExpanded := Homomorphism;
+		HomomorphismExpanded[1][x] := y;
+		Append(~HomomorphismExpanded[2], x);
+		mapping := internal_utility_NewMonomorphism(A, B, Generators, HomomorphismExpanded, Images);
+		if mapping ne [] then
+			return mapping;
+		end if;
+
+	end for;
+
+	return [];
+
+end intrinsic;
+
 intrinsic internal_utility_Monomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
@@ -788,18 +890,59 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEn
         Append(~Q_invariants,invariants);
     end for;
 
-    QInvSet := SetToIndexedSet(Set(Q_invariants));
+//    QInvSet := SetToIndexedSet(Set(Q_invariants));
 
-    partition := [ [ ] : x in QInvSet ];
+//    partition := [ [ ] : x in QInvSet ];
 
-    for index1 in QSet do
-        for index2 := 1 to #partition do
-            if Q_invariants[index1] eq QInvSet[index2] then
-                Append(~partition[index2], index1);
-                break;
-            end if;
-        end for;
-    end for;
+//    for index1 in QSet do
+//        for index2 := 1 to #partition do
+//            if Q_invariants[index1] eq QInvSet[index2] then
+//                Append(~partition[index2], index1);
+//                break;
+//            end if;
+//        end for;
+//    end for;
 
     return Q_invariants;
+end intrinsic;
+
+
+intrinsic internal_ElementInvariants(F :: SeqEnum[SeqEnum[RngIntElt]], p :: RngIntElt) -> SeqEnum[RngIntElt]
+{ It returns the vector of invariants of the element p of F }
+    QSet := [1..#F];
+
+
+    invariants := [0, 0, 0, 0,  0];
+
+    inv6 := {};
+
+
+    for x in QSet do
+        px := F[p][x];
+
+        if px eq x then
+            invariants[1] +:= 1;
+        end if;
+
+        xp := F[x][p];
+
+        Include(~inv6,xp);
+
+        if xp eq x then
+            invariants[2] +:= 1;
+        end if;
+
+        if F[px][p] eq p then
+            invariants[3] +:= 1;
+        end if;
+
+        if xp eq px then
+            invariants[5] +:= 1;
+        end if;
+
+    end for;
+
+    invariants[4] := #inv6;
+
+    return invariants;
 end intrinsic;

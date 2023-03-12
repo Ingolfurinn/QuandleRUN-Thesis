@@ -129,6 +129,12 @@ intrinsic Invariants(Q :: Qndl) -> SeqEnum[SeqEnum[RngIntElt]]
 	return internal_Invariants(internal_QuandleMatrix(Q));
 end intrinsic;
 
+intrinsic ElementInvariants(Q :: Qndl, x) -> SeqEnum[SeqEnum[RngIntElt]]
+{ Returns the vector of invariants of the quandle Q }
+    require x in Q`Set : "This object is not an element of the quandle";
+	return internal_ElementInvariants(internal_QuandleMatrix(Q),Q`_NumberingMap(x));
+end intrinsic;
+
 intrinsic ConjugationQuandle(G :: Grp, n :: RngIntElt) -> Qndl
 { It generates the n-fold Conjugation quandle of group G }
 

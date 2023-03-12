@@ -891,12 +891,13 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[Tup]/
 
     QInvSet := SetToIndexedSet(Set(Q_invariants));
 
-    partition := [ <[ ], x>: x in QInvSet ];
+    partition := [ [ [], x ]: x in QInvSet ]; // Cannot use tuples because it causes problems with the universe when appending
 
     for index1 in QSet do
         for index2 := 1 to #partition do
             if Q_invariants[index1] eq QInvSet[index2] then
-                Append(~partition[index2][1], index1);
+                Append(~partition[index2,1], index1);
+
                 break;
             end if;
         end for;

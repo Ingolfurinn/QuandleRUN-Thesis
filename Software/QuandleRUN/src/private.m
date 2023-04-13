@@ -393,11 +393,12 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 		return Homomorphism[1];
 	end if;
 
-
+    print(Images);
 	x := 0;
 	ExtractRep(~Generators, ~x);
-
+    print(x);
 	Images_x := [ y : y in Images[x] | x notin Homomorphism[1] ];
+    print(Images_x);
 
 	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;

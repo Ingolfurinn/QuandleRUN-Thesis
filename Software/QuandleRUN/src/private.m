@@ -323,7 +323,7 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     genA := internal_Generators(A);
 
     invImages := internal_Invariants(B);
-
+    print(invImages);
     Images := [];
 
     for generator in genA do
@@ -393,12 +393,12 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 		return Homomorphism[1];
 	end if;
 
-    print(Images);
+//    print(Images);
 	x := 0;
 	ExtractRep(~Generators, ~x);
-    print(x);
+//    print(x);
 	Images_x := [ y : y in Images[x] | x notin Homomorphism[1] ];
-    print(Images_x);
+//    print(Images_x);
 
 	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;

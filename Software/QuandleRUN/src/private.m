@@ -352,6 +352,21 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
     if IsEmpty(Generators) then
+		new := {* x : x in Homomorphism[2] *};
+		for x,y in new do
+			z := A[x,y];
+			Hx := Homomorphism[1][x];
+			Hy := Homomorphism[1][y];
+			Hz := Homomorphism[1][z];
+			HxHy := B[Hx, Hy];
+			if (Hz eq 0) or (Hz eq HxHy) then
+				Homomorphism[1][z] := HxHy;
+				Append(~Homomorphism[2], z);
+			else
+				return [];
+			end if;
+		end for;
+		if
 		return Homomorphism[1];
 	end if;
 

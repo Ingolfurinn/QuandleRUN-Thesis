@@ -351,47 +351,6 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
     if IsEmpty(Generators) then
-
-		new := {* x : x in Homomorphism[2] *};
-		old := { };
-		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
-		Pairs := [];
-		while not(IsEmpty(new)) do
-			for x,y in new do
-				Append(~Pairs, <x,y>);
-			end for;
-
-			for x in old do
-				for y in new do
-					Append(~Pairs, <x,y>);
-					Append(~Pairs, <y,x>);
-				end for;
-			end for;
-
-			results := {* *};
-
-			for pair in Pairs do
-				x := pair[1];
-				y := pair[2];
-				z := A[x,y];
-				Hx := Homomorphism[1][x];
-				Hy := Homomorphism[1][y];
-				Hz := Homomorphism[1][z];
-				HxHy := B[Hx, Hy];
-				if (Hz eq 0) and (not lookupTable[HxHy]) then
-					Homomorphism[1][z] := HxHy;
-					Include(~results, z);
-					lookupTable[HxHy] := true;
-				else
-					if Hz ne HxHy then
-						return [];
-					end if;
-				end if;
-			end for;
-			old := old join new;
-			new := results;
-		end while;
-
 		return Homomorphism[1];
 	end if;
 
@@ -869,8 +828,8 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEn
 
             xp := F[x][p];
 
-// 			Include(~inv6,xp);
-            Include(~inv6,px);
+			Include(~inv6,xp);
+//             Include(~inv6,px);
 
             if xp eq x then
                 invariants[2] +:= 1;
@@ -928,8 +887,8 @@ intrinsic internal_ElementInvariants(F :: SeqEnum[SeqEnum[RngIntElt]], p :: RngI
 
         xp := F[x][p];
 
-// 		Include(~inv6,xp);
-        Include(~inv6,px);
+		Include(~inv6,xp);
+//         Include(~inv6,px);
 
         if xp eq x then
             invariants[2] +:= 1;

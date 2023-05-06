@@ -349,11 +349,8 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 		new := {* x : x in Homomorphism[2] *};
 		old := { };
 		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
-
-		Pairs := [];
-
-		while not IsEmpty(new) do
-			for x,y in new do
+		while not(IsEmpty(new)) do
+					for x,y in new do
 				Append(~Pairs, <x,y>);
 			end for;
 
@@ -376,7 +373,7 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 				HxHy := B[Hx, Hy];
 				if (Hz eq 0) and (not lookupTable[HxHy]) then
 					Homomorphism[1][z] := HxHy;
-					Append(~Homomorphism[2], z);
+// 					Append(~Homomorphism[2], z);
 					Include(~results, z);
 					lookupTable[HxHy] := true;
 				else
@@ -387,7 +384,6 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 			end for;
 			old := old join new;
 			new := results;
-
 		end while;
 
 		return Homomorphism[1];
@@ -847,7 +843,7 @@ end intrinsic;
 
 
 // invariants 2, 3, 4, 6, 11
-intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[Tup]//SeqEnum[SeqEnum[RngIntElt]]
+intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[RngIntElt]]
 { It returns the vector of invariants of the quandle represented by F }
     QSet := [1..#F];
 

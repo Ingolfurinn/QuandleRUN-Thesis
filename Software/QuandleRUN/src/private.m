@@ -366,8 +366,11 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 				return [];
 			end if;
 		end for;
-		if
-		return Homomorphism[1];
+		if (0 in Homomorphism[1]) then
+			return internal_utility_NewMonomorphism(A, B, Generators, Homomorphism, Images);
+		else
+			return Homomorphism[1];
+		end if;
 	end if;
 
 	x := 0;

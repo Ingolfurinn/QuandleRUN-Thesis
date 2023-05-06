@@ -323,7 +323,7 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     genA := internal_Generators(A);
 
     invImages := internal_Invariants(B);
-    print(invImages);
+//     print(invImages);
     Images := [];
 
     for generator in genA do

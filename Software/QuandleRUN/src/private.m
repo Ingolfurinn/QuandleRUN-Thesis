@@ -855,7 +855,7 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEn
     Q_invariants := [];
 
     for p in QSet do
-        invariants := [0, 0, 0, 0,  0];
+        invariants := [0, 0, 0, 0, 0];
 
         inv6 := {};
 
@@ -869,7 +869,8 @@ intrinsic internal_Invariants(F :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEn
 
             xp := F[x][p];
 
-            Include(~inv6,xp);
+// 			Include(~inv6,xp);
+            Include(~inv6,px);
 
             if xp eq x then
                 invariants[2] +:= 1;
@@ -927,7 +928,8 @@ intrinsic internal_ElementInvariants(F :: SeqEnum[SeqEnum[RngIntElt]], p :: RngI
 
         xp := F[x][p];
 
-        Include(~inv6,xp);
+// 		Include(~inv6,xp);
+        Include(~inv6,px);
 
         if xp eq x then
             invariants[2] +:= 1;

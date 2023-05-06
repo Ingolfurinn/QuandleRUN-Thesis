@@ -340,6 +340,7 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
 	//BLOCK
 	ret := internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
 	if (ret eq []) then
+		print(genA);
 		print(Images);
 	end if;
 	//BLOCK

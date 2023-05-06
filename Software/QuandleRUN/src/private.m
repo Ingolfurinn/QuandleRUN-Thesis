@@ -351,7 +351,7 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
 		Pairs := [];
 		while not(IsEmpty(new)) do
-					for x,y in new do
+			for x,y in new do
 				Append(~Pairs, <x,y>);
 			end for;
 

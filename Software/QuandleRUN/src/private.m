@@ -323,7 +323,7 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     genA := internal_Generators(A);
 
     invImages := internal_Invariants(B);
-//     print(invImages);
+
     Images := [];
 
     for generator in genA do
@@ -337,8 +337,13 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     end for;
 	homomorphism := [[ 0 : x in A ], []];
 
-
-	return internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
+	//BLOCK
+	ret := internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
+	if (ret eq []) then
+		print(Images);
+	end if;
+	//BLOCK
+	return ret;
 end intrinsic;
 
 intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
@@ -374,7 +379,6 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 				HxHy := B[Hx, Hy];
 				if (Hz eq 0) and (not lookupTable[HxHy]) then
 					Homomorphism[1][z] := HxHy;
-// 					Append(~Homomorphism[2], z);
 					Include(~results, z);
 					lookupTable[HxHy] := true;
 				else
@@ -390,12 +394,10 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 		return Homomorphism[1];
 	end if;
 
-//    print(Images);
 	x := 0;
 	ExtractRep(~Generators, ~x);
-//    print(x);
 	Images_x := [ y : y in Images[x] | x notin Homomorphism[1] ];
-//    print(Images_x);
+
 
 	for y in Images_x do
 		HomomorphismExpanded := Homomorphism;

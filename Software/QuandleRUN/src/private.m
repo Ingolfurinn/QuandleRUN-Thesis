@@ -358,13 +358,9 @@ intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :
 			Hy := Homomorphism[1][y];
 			Hz := Homomorphism[1][z];
 			HxHy := B[Hx, Hy];
-			if (Hz ne HxHy) and (Hz ne 0) then
-				return [];
-			else
-				if (Hz eq 0) then
-					Homomorphism[1][z] := HxHy;
-					Append(~Homomorphism[2], z);
-				end if;
+			if (Hz eq 0) then
+				Homomorphism[1][z] := HxHy;
+				Append(~Homomorphism[2], z);
 			end if;
 		end for;
 		if (0 in Homomorphism[1]) then

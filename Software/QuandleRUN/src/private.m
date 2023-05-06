@@ -348,30 +348,49 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
 	return ret;
 end intrinsic;
 
+intrinsic count(A :: SeqEnum[RngIntElt], B :: RngIntElt) -> RngIntElt
+{ Counts the occurrences of B in A }
+
+    counter := 0;
+	for x in A do
+		if x eq B then
+			counter := counter + 1;
+		end if;
+	end for;
+
+	return counter;
+end intrinsic;
+
 intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
     if IsEmpty(Generators) then
+		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
 		for x,y in Homomorphism[2] do
 			z := A[x,y];
 			Hx := Homomorphism[1][x];
 			Hy := Homomorphism[1][y];
 			Hz := Homomorphism[1][z];
 			HxHy := B[Hx, Hy];
+			if lookupTable[HxHy] and (Hz ne HxHy) then
+				return [];
+			end if;
+			if (Hz ne HxHy) and (Hz ne 0) then
+				return [];
+			end if;
 			if (Hz eq 0) then
 				Homomorphism[1][z] := HxHy;
 				Append(~Homomorphism[2], z);
-			else
-				if (Hz ne HxHy) then
-					return [];
-				end if;
 			end if;
+
+
 		end for;
 		if (0 in Homomorphism[1]) then
 			return internal_utility_NewMonomorphism(A, B, Generators, Homomorphism, Images);
 		else
 			return Homomorphism[1];
 		end if;
+		return Homomorphism[1];
 	end if;
 
 	x := 0;

@@ -328,10 +328,11 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
 
     for generator in genA do
         invs := internal_ElementInvariants(A,generator);
+        Images[generator] := [];
         for block in invImages do
             if (&and [invs[i] le block[2][i] : i in [1..5]]) then
-                Images[generator] := block[1];
-                break;
+                Append(~Images[generator], block[1]);
+//                break;
             end if;
         end for;
     end for;

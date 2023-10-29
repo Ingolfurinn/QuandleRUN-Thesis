@@ -331,7 +331,9 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
         Images[generator] := [];
         for block in invImages do
             if (&and [invs[i] le block[2][i] : i in [1..5]]) then
-                Append(~Images[generator], block[1]);
+				for y in block[1] do
+					Append(~Images[generator], y);
+ 				end for;
 //                break;
             end if;
         end for;

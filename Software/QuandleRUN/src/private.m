@@ -337,14 +337,9 @@ intrinsic internal_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnu
     end for;
 	homomorphism := [[ 0 : x in A ], []];
 
-	//BLOCK
-		print(genA);
+
 	ret := internal_utility_NewMonomorphism(A, B, genA, homomorphism, Images);
-// 	if (ret eq []) then
-// 		print(genA);
-// 		print(Images);
-// 	end if;
-	//BLOCK
+
 	return ret;
 end intrinsic;
 
@@ -364,41 +359,62 @@ end intrinsic;
 intrinsic internal_utility_NewMonomorphism(A :: SeqEnum[SeqEnum[RngIntElt]], B :: SeqEnum[SeqEnum[RngIntElt]], Generators :: SetEnum[RngIntElt], Homomorphism :: SeqEnum[SeqEnum[RngIntElt]], Images :: SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[RngIntElt]
 { It should not be used by an external user : It should only be used by internal_Monomorphism. It recursively expands a map from the quandle represented by the integral quandle matrix A to the quandle represented by the integral quandle matrix B }
 
-    if IsEmpty(Generators) then
+   if IsEmpty(Generators) then
+
+		new := {* x : x in Homomorphism[2] *};
+		old := { };
 		lookupTable := [ x in Homomorphism[1] : x in [1..#B] ];
-		for x,y in Homomorphism[2] do
-			z := A[x,y];
-			Hx := Homomorphism[1][x];
-			Hy := Homomorphism[1][y];
-			Hz := Homomorphism[1][z];
-			HxHy := B[Hx, Hy];
-			if lookupTable[HxHy] and (Hz ne HxHy) then
-				return [];
-			end if;
-			if (Hz ne HxHy) and (Hz ne 0) then
-				return [];
-			end if;
-			if (Hz eq 0) then
-				Homomorphism[1][z] := HxHy;
-				Append(~Homomorphism[2], z);
-			end if;
 
+		Pairs := [];
 
-		end for;
-		if (0 in Homomorphism[1]) then
-			return internal_utility_NewMonomorphism(A, B, Generators, Homomorphism, Images);
-		else
-			return Homomorphism[1];
-		end if;
+		while not IsEmpty(new) do
+			for x,y in new do
+				Append(~Pairs, <x,y>);
+			end for;
+
+			for x in old do
+				for y in new do
+					Append(~Pairs, <x,y>);
+					Append(~Pairs, <y,x>);
+				end for;
+			end for;
+
+			results := {* *};
+
+			for pair in Pairs do
+				x := pair[1];
+				y := pair[2];
+				z := A[x,y];
+				Hx := Homomorphism[1][x];
+				Hy := Homomorphism[1][y];
+				Hz := Homomorphism[1][z];
+				HxHy := B[Hx, Hy];
+				if (Hz eq 0) and (not lookupTable[HxHy]) then
+					Homomorphism[1][z] := HxHy;
+					Append(~Homomorphism[2], z);
+					Include(~results, z);
+					lookupTable[HxHy] := true;
+				else
+					if Hz ne HxHy then
+						return [];
+					end if;
+				end if;
+			end for;
+			old := old join new;
+			new := results;
+
+		end while;
+
 		return Homomorphism[1];
 	end if;
 
+
 	x := 0;
 	ExtractRep(~Generators, ~x);
-	Images_x := [ y : y in Images[x] | x notin Homomorphism[1] ];
 
+	ImX := [ x : x in Images[x] | x notin Homomorphism[1] ];
 
-	for y in Images_x do
+	for y in ImX do
 		HomomorphismExpanded := Homomorphism;
 		HomomorphismExpanded[1][x] := y;
 		Append(~HomomorphismExpanded[2], x);
